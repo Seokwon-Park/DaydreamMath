@@ -1,26 +1,46 @@
-#include <stdint.h>
+#pragma once
+
+#include <cmath>
+#include <cstdint>
+#include <limits>
 #include <numbers>
 
-// unsigned integers
-using UInt64 = uint64_t;
-using UInt32 = uint32_t;
-using UInt16 = uint16_t;
-using UInt8 = uint8_t;
+namespace Daydream::Math {
 
-// signed integers
-using Int64 = int64_t;
-using Int32 = int32_t;
-using Int16 = int16_t;
-using Int8 = int8_t;
+// Integer aliases
+using UInt8 = std::uint8_t;
+using UInt16 = std::uint16_t;
+using UInt32 = std::uint32_t;
+using UInt64 = std::uint64_t;
 
-using Bool = bool;
+using Int8 = std::int8_t;
+using Int16 = std::int16_t;
+using Int32 = std::int32_t;
+using Int64 = std::int64_t;
 
 using Float32 = float;
+using Float64 = double;
 
-namespace Daydream
+constexpr Float32 kPi = static_cast<Float32>(std::numbers::pi_v<Float64>);
+constexpr Float32 kHalfPi = kPi * 0.5f;
+constexpr Float32 kTwoPi = kPi * 2.0f;
+constexpr Float32 kEpsilon = 1e-5f;
+
+[[nodiscard]] inline bool NearlyEqual(const Float32 a, const Float32 b, const Float32 epsilon = kEpsilon)
 {
-	constexpr Float32 PI = static_cast<Float32>(std::numbers::pi);
-	constexpr Float32 halfPI = PI * 0.5f;
-	constexpr Float32 twoPI = PI * 2.0f;
-	constexpr Float32 epsilon = 1e-5f;
+    return std::fabs(a - b) <= epsilon;
 }
+
+[[nodiscard]] inline Float32 Clamp(const Float32 value, const Float32 low, const Float32 high)
+{
+    if (value < low) return low;
+    if (value > high) return high;
+    return value;
+}
+
+[[nodiscard]] inline Float32 Lerp(const Float32 a, const Float32 b, const Float32 t)
+{
+    return a + (b - a) * t;
+}
+
+} // namespace Daydream::Math
