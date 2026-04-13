@@ -1,11 +1,15 @@
 #include <iostream>
 
-#include "Common.h"
-#include "Vector3.h"
+#include "DaydreamMath.h"
+
+using namespace Daydream;
 
 int main()
 {
-	std::cout << sizeof(Daydream::Vector<3, Daydream::Float32>);
+	Vector3 A = { 1.0f,1.0f, 1.0f };
+	Vector3 B = { 1.0f,1.0f, 1.0f };
+
+	Float32 Result = Dot(A, B);
 
 	return 0;
 }

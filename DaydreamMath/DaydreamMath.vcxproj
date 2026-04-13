@@ -124,13 +124,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Color.h" />
     <ClInclude Include="Fwd.h" />
-    <ClInclude Include="Math.h" />
-    <ClInclude Include="Common.h" />
+    <ClInclude Include="DaydreamMath.h" />
+    <ClInclude Include="MathUtility.h" />
+    <ClInclude Include="Types.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Matrix4x4.h" />
+    <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="SIMD.h" />
     <ClInclude Include="Vector.h" />
-    <ClInclude Include="Vector1.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />

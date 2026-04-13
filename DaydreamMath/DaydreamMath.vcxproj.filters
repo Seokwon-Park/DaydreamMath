@@ -3,14 +3,17 @@
   <ItemGroup>
     <ClInclude Include="Vector.h" />
     <ClInclude Include="Matrix.h" />
-    <ClInclude Include="Common.h" />
-    <ClInclude Include="Math.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="DaydreamMath.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="Fwd.h" />
-    <ClInclude Include="Vector1.h" />
     <ClInclude Include="Vector2.h" />
+    <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="Color.h" />
+    <ClInclude Include="SIMD.h" />
+    <ClInclude Include="MathUtility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

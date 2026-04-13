@@ -1,20 +1,19 @@
 #pragma once
 
-#include "Vector.h"
+#include "Fwd.h"
 
 namespace Daydream
 {
 	template<typename T>
-	struct alignas(16) Vector<2, T>
+	struct Vector<2, T>
 	{
-			
 		union
 		{
 			struct
 			{
-				T x, y, z;
+				T x, y;
 			};
-			T values[4];
+			T values[2];
 		};
 	};
 }
