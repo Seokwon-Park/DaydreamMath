@@ -1,55 +1,162 @@
 #pragma once
 
+#include "Common.h"
+
+#include <array>
+#include <cassert>
+#include <cmath>
+#include <initializer_list>
+
 namespace Daydream
 {
-	// 1. 기본 템플릿 선언 (사용되지 않고 특수화 구조를 강제함)
-	template <size_t L, typename T>
-	struct Vec;
+	template <UInt64 N, typename T = Float32> struct Vector;
+	//class Vector final
+	//{
+	//public:
+	//	static_assert(N >= 2, "Vector dimension must be at least 2.");
 
-	// 2. 3차원 벡터 특수화 (Vec<3, T>)
-	template <typename T>
-	struct alignas(16) Vec<3, T> {
-		union {
-			struct {
-				T x, y, z;
-				T pad; // SIMD 정렬을 위한 16바이트 맞춤용 패딩
-			};
-			T data[4];
-		};
+	//	Vector() = default;
+	//	explicit Vector(const ValueType _scalar) { values.fill(_scalar); }
 
-		// 생성자
-		Vec() : x(0), y(0), z(0), pad(0) {}
-		Vec(T _x, T _y, T _z) : x(_x), y(_y), z(_z), pad(0) {}
-		explicit Vec(T _scalar) : x(_scalar), y(_scalar), z(_scalar), pad(0) {}
+	//	Vector(std::initializer_list<ValueType> _values)
+	//	{
+	//		assert(values.size() == N && "initializer size must match vector dimension");
+	//		UInt64 index = 0;
+	//		for (const auto& value : values)
+	//		{
+	//			values[index++] = value;
+	//		}
+	//	}
 
-		// 기본 함수 (대문자 시작)
-		static Vec Zero() { return Vec(0, 0, 0); }
-		static Vec One() { return Vec(1, 1, 1); }
+	//	[[nodiscard]] static Vector Zero()
+	//	{
+	//		return Vector{};
+	//	}
 
-		// 데이터 접근
-		T* Data() { return data; }
-		const T* Data() const { return data; }
+	//	[[nodiscard]] static Vector One()
+	//	{
+	//		return Vector{ static_cast<ValueType>(1) };
+	//	}
 
-		T& operator[](size_t _index) { return data[_index]; }
-		const T& operator[](size_t _index) const { return data[_index]; }
+	//	[[nodiscard]] constexpr UInt64 Size() const { return N; }
 
-		// 연산자 오버로딩
-		Vec& operator+=(const Vec& _other) {
-			x += _other.x;
-			y += _other.y;
-			z += _other.z;
-			return *this;
-		}
-	};
+	//	ValueType& operator[](const UInt64 _index)
+	//	{
+	//		return values[index];
+	//	}
 
-	// 비멤버 연산자
-	template <typename T>
-	inline Vec<3, T> operator+(const Vec<3, T>& _a, const Vec<3, T>& _b) {
-		return Vec<3, T>(_a.x + _b.x, _a.y + _b.y, _a.z + _b.z);
-	}
+	//	const ValueType& operator[](const UInt64 index) const
+	//	{
+	//		return values[index];
+	//	}
 
-	// 3. 엔진 내에서 사용할 직관적인 타입 별칭 (Aliasing)
-	using Vector3 = Vec<3, float>;
-	using Vector3i = Vec<3, int>;
-	using Vector3d = Vec<3, double>; // 필요하다면 쉽게 확장 가능
-} // namespace Daydream
+	//	Vector& operator+=(const Vector& _rhs)
+	//	{
+	//		for (std::size_t i = 0; i < N; ++i)
+	//		{
+	//			values[i] += _rhs.values[i];
+	//		}
+	//		return *this;
+	//	}
+
+	//	Vector& operator-=(const Vector& _rhs)
+	//	{
+	//		for (std::size_t i = 0; i < N; ++i)
+	//		{
+	//			values[i] -= _rhs.values[i];
+	//		}
+	//		return *this;
+	//	}
+
+	//	Vector& operator*=(const ValueType _scalar)
+	//	{
+	//		for (auto& value : values)
+	//		{
+	//			value *= scalar;
+	//		}
+	//		return *this;
+	//	}
+
+	//	[[nodiscard]] ValueType LengthSquared() const
+	//	{
+	//		ValueType result{};
+	//		for (const auto value : values)
+	//		{
+	//			result += value * value;
+	//		}
+	//		return result;
+	//	}
+
+	//	[[nodiscard]] ValueType Length() const
+	//	{
+	//		return static_cast<ValueType>(std::sqrt(LengthSquared()));
+	//	}
+
+	//	[[nodiscard]] Vector Normalized() const
+	//	{
+	//		const auto len = Length();
+	//		if (NearlyEqual(static_cast<Float32>(len), 0.0f))
+	//		{
+	//			return Vector::Zero();
+	//		}
+	//		return (*this) * (static_cast<ValueType>(1) / len);
+	//	}
+
+	//private:
+	//	std::array<ValueType, N> values{};
+	//};
+
+	//template <std::size_t N, typename ValueType>
+	//[[nodiscard]] inline Vector<N, ValueType> operator+(Vector<N, ValueType> lhs, const Vector<N, ValueType>& rhs)
+	//{
+	//	lhs += rhs;
+	//	return lhs;
+	//}
+
+	//template <std::size_t N, typename ValueType>
+	//[[nodiscard]] inline Vector<N, ValueType> operator-(Vector<N, ValueType> lhs, const Vector<N, ValueType>& rhs)
+	//{
+	//	lhs -= rhs;
+	//	return lhs;
+	//}
+
+	//template <std::size_t N, typename ValueType>
+	//[[nodiscard]] inline Vector<N, ValueType> operator*(Vector<N, ValueType> lhs, const ValueType scalar)
+	//{
+	//	lhs *= scalar;
+	//	return lhs;
+	//}
+
+	//template <std::size_t N, typename ValueType>
+	//[[nodiscard]] inline Vector<N, ValueType> operator*(const ValueType scalar, Vector<N, ValueType> rhs)
+	//{
+	//	rhs *= scalar;
+	//	return rhs;
+	//}
+
+	//template <std::size_t N, typename ValueType>
+	//[[nodiscard]] inline ValueType Dot(const Vector<N, ValueType>& lhs, const Vector<N, ValueType>& rhs)
+	//{
+	//	ValueType result{};
+	//	for (std::size_t i = 0; i < N; ++i)
+	//	{
+	//		result += lhs[i] * rhs[i];
+	//	}
+	//	return result;
+	//}
+
+	//[[nodiscard]] inline Vector<3, Float32> Cross(const Vector<3, Float32>& lhs, const Vector<3, Float32>& rhs)
+	//{
+	//	return Vector<3, Float32>
+	//	{
+	//		lhs[1] * rhs[2] - lhs[2] * rhs[1],
+	//			lhs[2] * rhs[0] - lhs[0] * rhs[2],
+	//			lhs[0] * rhs[1] - lhs[1] * rhs[0]
+	//	};
+	//}
+
+	//using Vector2 = Vector<2, Float32>;
+	//using Vector3 = Vector<3, Float32>;
+	//using Vector4 = Vector<4, Float32>;
+
+} // namespace Daydream::Math
