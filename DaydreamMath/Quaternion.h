@@ -87,6 +87,7 @@ namespace Daydream
 
 		static Quat Slerp(const Quat<T>& _q1, const Quat<T>& _q2, T _t);
 		static Quat CreateFromMatrix(const Matrix<4, 4, T>& _matrix);
+		static Quat CreateFromAxis(const Vector<3, T>& _xAxis, const Vector<3, T>& _yAxis, const Vector<3, T>& _zAxis);
 
 		Quat operator+(const Quat& _other) const { return Quat(x + _other.x, y + _other.y, z + _other.z, w + _other.w); }
 		Quat operator-(const Quat& _other) const { return Quat(x - _other.x, y - _other.y, z - _other.z, w - _other.w); }

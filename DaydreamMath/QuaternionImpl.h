@@ -115,4 +115,18 @@ namespace Daydream
             }
         }
     }
+    template <typename T>
+    Quat<T> Quat<T>::CreateFromAxis(const Vector<3, T>& _xAxis, const Vector<3, T>& _yAxis, const Vector<3, T>& _zAxis)
+    {
+        // 1. 빈 단위 행렬(포장지)을 하나 가져옵니다.
+        Matrix<4, 4, T> tempMat = Matrix<4, 4, T>::Identity();
+
+        // 2. 포장지의 각 줄(Row)에 3개의 축을 그대로 꽂아 넣습니다!
+        tempMat.mat[0][0] = _xAxis.x; tempMat.mat[0][1] = _xAxis.y; tempMat.mat[0][2] = _xAxis.z;
+        tempMat.mat[1][0] = _yAxis.x; tempMat.mat[1][1] = _yAxis.y; tempMat.mat[1][2] = _yAxis.z;
+        tempMat.mat[2][0] = _zAxis.x; tempMat.mat[2][1] = _zAxis.y; tempMat.mat[2][2] = _zAxis.z;
+
+        // 3. 방금 유로클리디안 스페이스에서 복붙해오신 그 완벽한 함수에 던집니다!
+        return CreateFromMatrix(tempMat);
+    }
 }

@@ -2,11 +2,52 @@
 
 #include "Fwd.h"
 #include "Matrix4x4.h"
+#include "Vector2.h"
 #include "Vector3.h"
+#include "Vector4.h"
 
 //MatrixUtility
 namespace Daydream
 {
+	template<typename T>
+	Vector<4, T> Matrix<4, 4, T>::operator*(const Vector<4, T> _vec) const
+	{
+		SIMDRegister row0 = SIMD::LoadUnaligned(mat[0]);
+		SIMDRegister row1 = SIMD::LoadUnaligned(mat[1]);
+		SIMDRegister row2 = SIMD::LoadUnaligned(mat[2]);
+		SIMDRegister row3 = SIMD::LoadUnaligned(mat[3]);
+
+		return Vector<4, Float32>(
+			SIMD::Dot(row0, _vec.reg),
+			SIMD::Dot(row1, _vec.reg),
+			SIMD::Dot(row2, _vec.reg),
+			SIMD::Dot(row3, _vec.reg)
+		);
+	}
+
+	template<typename T>
+	inline Vector<3, T> Matrix<4, 4, T>::TransformPoint(const Vector<3, T>& _point) const
+	{
+		const T x = mat[0][0] * _point.x + mat[0][1] * _point.y + mat[0][2] * _point.z + mat[0][3];
+		const T y = mat[1][0] * _point.x + mat[1][1] * _point.y + mat[1][2] * _point.z + mat[1][3];
+		const T z = mat[2][0] * _point.x + mat[2][1] * _point.y + mat[2][2] * _point.z + mat[2][3];
+		const T w = mat[3][0] * _point.x + mat[3][1] * _point.y + mat[3][2] * _point.z + mat[3][3];
+
+		if (w == static_cast<T>(0) || w == static_cast<T>(1)) return Vector<3, T>(x, y, z);
+
+		const T invW = static_cast<T>(1.0) / w;
+		return Vector<3, T>(x * invW, y * invW, z * invW);
+	}
+
+	template<typename T>
+	Vector<3, T> Matrix<4, 4, T>::TransformVector(const Vector<3, T>& _vector) const
+	{
+		return Vector<3, T>(
+			mat[0][0] * _vector.x + mat[0][1] * _vector.y + mat[0][2] * _vector.z,
+			mat[1][0] * _vector.x + mat[1][1] * _vector.y + mat[1][2] * _vector.z,
+			mat[2][0] * _vector.x + mat[2][1] * _vector.y + mat[2][2] * _vector.z);
+	}
+
 	template <typename T>
 	Matrix<4, 4, T> Matrix<4, 4, T>::CreateTranslation(const Vector<3, T>& _translation)
 	{
@@ -161,7 +202,7 @@ namespace Daydream
 		if (_outScale.z > 0) zaxis /= _outScale.z;
 
 		// 4. 순수 회전 행렬을 쿼터니언으로 변환 (여기서는 함수 호출로 대체)
-		_outRotation = MatrixToQuaternion(xaxis, yaxis, zaxis);
+		_outRotation = Quat<T>::MatrixToQuaternion(xaxis, yaxis, zaxis);
 	}
 }
 

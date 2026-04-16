@@ -86,9 +86,6 @@ namespace Daydream
 	template <typename T>
 	inline Vector<3, T> operator*(const Vector<3, T>& _v, const Matrix<4, 4, T>& _m) = delete;
 
-	Vector3 RotateVector(const Quaternion& _quat, const Vector3& _vector)
-	{
-		return Vector3();
-	}
-
+	template <typename T>
+	inline Vector<3, T> operator*(const Matrix<4, 4, T>& _m, const Vector<3, T>& _v) = delete;
 }

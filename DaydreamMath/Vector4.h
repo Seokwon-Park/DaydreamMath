@@ -109,15 +109,5 @@ namespace Daydream
 		{
 			*this = Normalized();
 		}
-
-		static Float32 Dot(const Vector& _a, const Vector& _b)
-		{
-			return _a.x * _b.x + _a.y * _b.y + _a.z * _b.z;
-		}
-
-		static Vector Cross(const Vector& _a, const Vector& _b)
-		{
-
-		}
 	};
 }
