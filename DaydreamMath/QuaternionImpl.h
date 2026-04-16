@@ -129,4 +129,59 @@ namespace Daydream
         // 3. 방금 유로클리디안 스페이스에서 복붙해오신 그 완벽한 함수에 던집니다!
         return CreateFromMatrix(tempMat);
     }
+    template<typename T>
+    Quat<T> Quat<T>::CreateFromEuler(const Vector<3, T>& _euler)
+    {
+        // 1. 각도를 반으로 나눔
+        T halfPitch = _euler.x * static_cast<T>(0.5);
+        T halfYaw = _euler.y * static_cast<T>(0.5);
+        T halfRoll = _euler.z * static_cast<T>(0.5);
+
+        // 2. sin, cos 값을 미리 구함
+        T sp = std::sin(halfPitch);
+        T cp = std::cos(halfPitch);
+        T sy = std::sin(halfYaw);
+        T cy = std::cos(halfYaw);
+        T sr = std::sin(halfRoll);
+        T cr = std::cos(halfRoll);
+
+        // 3. Yaw -> Pitch -> Roll 순서로 곱해진 결과값
+        return Quat<T>(
+            sp * cy * cr - cp * sy * sr, // X
+            cp * sy * cr + sp * cy * sr, // Y
+            cp * cy * sr - sp * sy * cr, // Z
+            cp * cy * cr + sp * sy * sr  // W
+        );
+    }
+    template<typename T>
+    inline Vector<3, T> Quat<T>::ToEuler() const
+    {
+        Vector<3, T> euler;
+
+        // 1. X축 회전 (Pitch) 계산 및 짐벌락 방어!
+        T sinp = static_cast<T>(2.0) * (w * x - y * z);
+
+        // sinp 값이 1.0을 넘어가면 (부동소수점 오차) std::asin 이 NaN을 뱉고 게임이 터집니다!
+        if (std::abs(sinp) >= static_cast<T>(1.0))
+        {
+            // 90도 (PI / 2) 로 강제 고정하되, 부호는 원래 sinp의 부호를 따라갑니다.
+            euler.x = std::copysign(static_cast<T>(3.14159265358979323846 / 2.0), sinp);
+        }
+        else
+        {
+            euler.x = std::asin(sinp);
+        }
+
+        // 2. Y축 회전 (Yaw)
+        T siny_cosp = static_cast<T>(2.0) * (w * y + z * x);
+        T cosy_cosp = static_cast<T>(1.0) - static_cast<T>(2.0) * (x * x + y * y);
+        euler.y = std::atan2(siny_cosp, cosy_cosp);
+
+        // 3. Z축 회전 (Roll)
+        T sinr_cosp = static_cast<T>(2.0) * (w * z + x * y);
+        T cosr_cosp = static_cast<T>(1.0) - static_cast<T>(2.0) * (x * x + z * z);
+        euler.z = std::atan2(sinr_cosp, cosr_cosp);
+
+        return euler;
+    }
 }

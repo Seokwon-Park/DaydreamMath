@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Fwd.h"
+#include "SIMD.h"
 
 namespace Daydream
 {

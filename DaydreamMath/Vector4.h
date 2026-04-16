@@ -64,7 +64,7 @@ namespace Daydream
 			if (it != _values.end()) z = *it++;
 		}
 
-		inline Vector operator-() const { return Vector(); }
+		inline Vector operator-() const { return Vector(SIMD::Sub(SIMD::SetZero(), reg)); }
 		inline Vector operator+(const Vector& _other) const { return Vector(SIMD::Add(reg, _other.reg)); }
 		inline Vector operator-(const Vector& _other) const { return Vector(SIMD::Sub(reg, _other.reg)); }
 		inline Vector operator*(const Vector& _other) const { return Vector(SIMD::Mul(reg, _other.reg)); }
@@ -85,17 +85,17 @@ namespace Daydream
 		inline Vector& operator*=(Float32 _scalar) { reg = SIMD::Mul(reg, SIMD::SetVal(_scalar)); return *this; }
 		inline Vector& operator/=(Float32 _scalar) { reg = SIMD::Div(reg, SIMD::SetVal(_scalar)); return *this; }
 
-		bool operator==(const Vector& _other) const { return; }
+		bool operator==(const Vector& _other) const { return x == _other.x && y == _other.y && z == _other.z && w == _other.w; }
 		bool operator!=(const Vector& _other) const { return !(*this == _other); }
 
 		Float32 LengthSq() const
 		{
-			return x * x + y * y + z * z;
+			return x * x + y * y + z * z + w * w;
 		}
 
 		Float32 Length() const
 		{
-			return std::sqrtf(LengthSq());
+			return std::sqrt(LengthSq());
 		}
 
 		Vector Normalized() const

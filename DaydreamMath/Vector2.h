@@ -126,7 +126,7 @@ namespace Daydream
 	template<typename T>
 	inline Vector<2, T> operator-(T _scalar, const Vector<2, T>& _vector)
 	{
-		return Vector<2, T>(_scalar - _vector.x, _scalar - _vector.y, _scalar - _vector.z);
+		return Vector<2, T>(_scalar - _vector.x, _scalar - _vector.y);
 	}
 
 	template<typename T>
@@ -138,6 +138,6 @@ namespace Daydream
 	template<typename T>
 	inline Vector<2, T> operator/(T _scalar, const Vector<2, T>& _vector)
 	{
-		return Vector<2, T>(_scalar / _vector.x, _scalar / _vector.y, _scalar / _vector.z);
+		return Vector<2, T>(_scalar / _vector.x, _scalar / _vector.y);
 	}
 }
