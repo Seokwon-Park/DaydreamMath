@@ -21,8 +21,19 @@ namespace Daydream
 		{
 		};
 
+		Vector(T _value)
+			: x(_value), y(_value), z(_value)
+		{
+		};
+
 		Vector(T _x, T _y, T _z)
 			: x(_x), y(_y), z(_z)
+		{
+		};
+
+		template <typename X, typename Y, typename Z>
+		Vector(X _x, Y _y, Z _z)
+			: x(static_cast<T>(_x)), y(static_cast<T>(_y)), z(static_cast<T>(_z))
 		{
 		};
 
@@ -39,8 +50,6 @@ namespace Daydream
 			if (it != _values.end()) y = *it++;
 			if (it != _values.end()) z = *it++;
 		}
-
-
 
 		Vector& operator=(std::initializer_list<T> _values)
 		{
@@ -61,27 +70,93 @@ namespace Daydream
 		T& operator[](int _index) { return values[_index]; }
 		const T& operator[](int _index) const { return values[_index]; }
 
-		Vector operator-() const { return Vector(-x, -y, -z); }
-		Vector operator+(const Vector& _other) const { return Vector(x + _other.x, y + _other.y, z + _other.z); }
-		Vector operator-(const Vector& _other) const { return Vector(x - _other.x, y - _other.y, z - _other.z); }
-		Vector operator*(const Vector& _other) const { return Vector(x * _other.x, y * _other.y, z * _other.z); }
-		Vector operator/(const Vector& _other) const { return Vector(x / _other.x, y / _other.y, z / _other.z); }
+		inline Vector operator-() const { return Vector(-x, -y, -z); }
+		inline Vector operator+(const Vector& _other) const { return Vector(x + _other.x, y + _other.y, z + _other.z); }
+		inline Vector operator-(const Vector& _other) const { return Vector(x - _other.x, y - _other.y, z - _other.z); }
+		inline Vector operator*(const Vector& _other) const { return Vector(x * _other.x, y * _other.y, z * _other.z); }
+		inline Vector operator/(const Vector& _other) const { return Vector(x / _other.x, y / _other.y, z / _other.z); }
 
-		// 5. 스칼라 사칙연산
-		Vector operator+(T _scalar) const { return Vector(x + _scalar, y + _scalar, z + _scalar); }
-		Vector operator-(T _scalar) const { return Vector(x - _scalar, y - _scalar, z - _scalar); }
-		Vector operator*(T _scalar) const { return Vector(x * _scalar, y * _scalar, z * _scalar); }
-		Vector operator/(T _scalar) const
+		inline Vector operator+(T _scalar) const { return Vector(x + _scalar, y + _scalar, z + _scalar); }
+		inline Vector operator-(T _scalar) const { return Vector(x - _scalar, y - _scalar, z - _scalar); }
+		inline Vector operator*(T _scalar) const { return Vector(x * _scalar, y * _scalar, z * _scalar); }
+		inline Vector operator/(T _scalar) const
 		{
 			T inv = static_cast<T>(1.0) / _scalar;
 			return Vector(x * inv, y * inv, z * inv);
 		}
 
-		Vector& operator+=(const Vector& _other) { x += _other.x; y += _other.y; z += _other.z; return *this; }
-		Vector& operator-=(const Vector& _other) { x -= _other.x; y -= _other.y; z -= _other.z; return *this; }
-		Vector& operator*=(T _scalar) { x *= _scalar; y *= _scalar; z *= _scalar; return *this; }
+		inline Vector& operator+=(const Vector& _other) { x += _other.x; y += _other.y; z += _other.z; return *this; }
+		inline Vector& operator-=(const Vector& _other) { x -= _other.x; y -= _other.y; z -= _other.z; return *this; }
+		inline Vector& operator*=(const Vector& _other) { x *= _other.x; y *= _other.y; z *= _other.z; return *this; }
+		inline Vector& operator/=(const Vector& _other) { x /= _other.x; y /= _other.y; z /= _other.z; return *this; }
+
+		inline Vector& operator+=(T _scalar) { x += _scalar; y += _scalar; z += _scalar; return *this; }
+		inline Vector& operator-=(T _scalar) { x -= _scalar; y -= _scalar; z -= _scalar; return *this; }
+		inline Vector& operator*=(T _scalar) { x *= _scalar; y *= _scalar; z *= _scalar; return *this; }
+		inline Vector& operator/=(T _scalar)
+		{
+			T inv = static_cast<T>(1.0) / _scalar;
+			x *= inv;
+			y *= inv;
+			z *= inv;
+			return *this;
+		}
 
 		bool operator==(const Vector& _other) const { return x == _other.x && y == _other.y && z == _other.z; }
 		bool operator!=(const Vector& _other) const { return !(*this == _other); }
+
+		T LengthSq() const
+		{
+			return x * x + y * y + z * z;
+		}
+
+		T Length() const
+		{
+			return static_cast<T>(std::sqrt(static_cast<T>(LengthSq())));
+		}
+
+		Vector Normalized() const
+		{
+			T length = Length();
+			if (length == static_cast<T>(0)) return Vector();
+			return *this / length;
+		}
+
+		void Normalize()
+		{
+			*this = Normalized();
+		}
+
+		static Vector Cross(const Vector& _a, const Vector& _b) {
+			return Vector(
+				_a.y * _b.z - _a.z * _b.y,
+				_a.z * _b.x - _a.x * _b.z,
+				_a.x * _b.y - _a.y * _b.x
+			);
+		}
 	};
+
+	template<typename T>
+	inline Vector<3, T> operator+(T _scalar, const Vector<3, T>& _vector)
+	{
+		return _vector + _scalar;
+	}
+
+	template<typename T>
+	inline Vector<3, T> operator-(T _scalar, const Vector<3, T>& _vector)
+	{
+		return Vector<3, T>(_scalar - _vector.x, _scalar - _vector.y, _scalar - _vector.z);
+	}
+
+	template<typename T>
+	inline Vector<3, T> operator*(T _scalar, const Vector<3, T>& _vector)
+	{
+		return _vector * _scalar;
+	}
+
+	template<typename T>
+	inline Vector<3, T> operator/(T _scalar, const Vector<3, T>& _vector)
+	{
+		return Vector<3, T>(_scalar / _vector.x, _scalar / _vector.y, _scalar / _vector.z);
+	}
 }

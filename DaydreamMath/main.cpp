@@ -6,10 +6,10 @@ using namespace Daydream;
 
 int main()
 {
-	Vector3 A = { 1.0f,1.0f, 1.0f };
-	Vector3 B = { 1.0f,1.0f, 1.0f };
+	Vector4 A = { 2.0, 1 , 5.0, 1.0f };
+	Vector4 B = { 1.0,3.0, 1.0, 1.0f };
 
-	Float32 Result = Dot(A, B);
+	Matrix4x4 mat = Matrix4x4::Identity();
 
 	return 0;
 }

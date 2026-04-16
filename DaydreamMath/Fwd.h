@@ -1,12 +1,15 @@
 #pragma once
 
-#include <assert.h>
-#include "Types.h"
+#include "BaseTypes.h"
 
 namespace Daydream
 {
-	template <UInt64 N, typename T = Float32> struct Vector;
-	template <UInt64 R, UInt64 C, typename T = Float32> struct Matrix;
+	template <UInt64 N, typename T> struct Vector;
+	template <UInt64 R, UInt64 C, typename T> struct Matrix;
+	template <typename T> struct Quat;
+
+	using Quaternion = Quat<Float32>;
+	using QuaternionD = Quat<Float64>;
 
 	using Vector2 = Vector<2, Float32>;
 	using Vector3 = Vector<3, Float32>;
