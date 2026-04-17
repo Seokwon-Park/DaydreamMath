@@ -8,5 +8,6 @@
 #include "QuaternionImpl.h"
 #include "Vector2.h"
 #include "Vector3.h"
+#include "Vector3Impl.h"
 #include "Vector4.h"
 #include "VectorMath.h"
