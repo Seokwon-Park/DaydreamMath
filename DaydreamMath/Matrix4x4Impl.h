@@ -266,17 +266,6 @@ namespace Daydream
 		return CreateOrthographic(-halfW, halfW, -halfH, halfH, _near, _far);
 	}
 
-	// 2. 3D 카메라용 (세로 사이즈 + 비율)
-	template <typename T>
-	Matrix<4, 4, T> Matrix<4, 4, T>::CreateOrthographicLH(T _size, T _aspectRatio, T _near, T _far)
-	{
-		// Size(보통 세로 크기)와 비율을 이용해 Width와 Height를 구한 뒤, 1번 함수로 다시 토스!
-		T height = _size;
-		T width = _size * _aspectRatio;
-
-		return CreateOrthographicLH(width, height, _near, _far);
-	}
-
 	template <typename T>
 	Matrix<4, 4, T> Matrix<4, 4, T>::CreateTranspose(const Matrix<4, 4, T>& _m)
 	{
