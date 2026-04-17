@@ -4,20 +4,20 @@
 #include "Matrix4x4.h"
 #include "Vector2.h"
 #include "Vector3.h"
-#include "Vector4.h"
+#include "Vector4SIMD.h"
 
 //MatrixUtility
 namespace Daydream
 {
 	template<typename T>
-	inline Vector<4, T> Matrix<4, 4, T>::operator*(const Vector<4, T> _vec) const
+	inline Vector4 Matrix<4, 4, T>::operator*(const Vector4 _vec) const
 	{
 		SIMDRegister row0 = SIMD::LoadUnaligned(mat[0]);
 		SIMDRegister row1 = SIMD::LoadUnaligned(mat[1]);
 		SIMDRegister row2 = SIMD::LoadUnaligned(mat[2]);
 		SIMDRegister row3 = SIMD::LoadUnaligned(mat[3]);
 
-		return Vector<4, Float32>(
+		return Vector4(
 			SIMD::Dot(row0, _vec.reg),
 			SIMD::Dot(row1, _vec.reg),
 			SIMD::Dot(row2, _vec.reg),
@@ -199,7 +199,7 @@ namespace Daydream
 		// View Transform = (R * T)^-1 scale 생략
 		// = T^-1 * R^-1
 		Vector<3, T> Look = _direction.Normalized();
-		Vector<3, T> Right = Vector<3,T>::Cross(_up, Look).Normalized();
+		Vector<3, T> Right = Vector<3, T>::Cross(_up, Look).Normalized();
 		Vector<3, T> Up = Vector<3, T>::Cross(Right, Look);
 
 		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
@@ -207,9 +207,9 @@ namespace Daydream
 		mat[1][0] = Up.x; mat[1][1] = Up.y; mat[1][2] = Up.z;
 		mat[2][0] = Look.x; mat[2][1] = Look.y; mat[2][2] = Look.z;
 
-		mat[0][3] = -Vector3::Dot(Look, _eye);
-		mat[1][3] = -Vector3::Dot(Right, _eye);
-		mat[2][3] = -Vector3::Dot(Up, _eye);
+		mat[0][3] = -Vector<3, T>::Dot(Right, _eye);
+		mat[1][3] = -Vector<3, T>::Dot(Up, _eye);
+		mat[2][3] = -Vector<3, T>::Dot(Look, _eye);
 
 		return mat;
 	}
@@ -243,12 +243,11 @@ namespace Daydream
 		// 2. 크기를 -1 ~ 1 사이로 정규화(Scale) 합니다.
 		mat[0][0] = static_cast<T>(2.0) / width;
 		mat[1][1] = static_cast<T>(2.0) / height;
-		mat[2][2] = -static_cast<T>(2.0) / depth; // 오른손 좌표계는 Z축이 거꾸로라 마이너스가 붙습니다!
+		mat[2][2] = static_cast<T>(2.0) / depth;
 
-		// 3. 중심점을 화면 한가운데로 이동(Translate) 시킵니다.
-		mat[3][0] = -(_right + _left) / width;
-		mat[3][1] = -(_top + _bottom) / height;
-		mat[3][2] = -(_far + _near) / depth;
+		mat[0][3] = -(_right + _left) / width;
+		mat[1][3] = -(_top + _bottom) / height;
+		mat[2][3] = -(_far + _near) / depth;
 		mat[3][3] = static_cast<T>(1.0);
 
 		return mat;
@@ -273,23 +272,6 @@ namespace Daydream
 			for (int c = 0; c < 4; ++c)
 				result[r][c] = _m[c][r];
 		return result;
-	}
-
-	// --- 2. 역행렬 (Inverse) ---
-	template <typename T>
-	inline Matrix<4, 4, T> Matrix<4, 4, T>::Inversed(const Matrix<4, 4, T>& m)
-	{
-		// 1. 소행렬식(Cofactor)을 이용한 행렬식(Determinant) 계산 및 여인수 행렬 도출
-		// (코드가 너무 길어지므로 가장 대중적이고 빠르고 안전한 Cramer's Rule 방식의 뼈대입니다)
-		T coef00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
-		T coef02 = m[1][2] * m[3][3] - m[3][2] * m[1][3];
-		T coef03 = m[1][2] * m[2][3] - m[2][2] * m[1][3];
-		// ... (나머지 15개 계수 계산 생략 - 이 부분은 너무 수학적 노가다라 보통 라이브러리 코드를 차용합니다) ...
-
-		Matrix<4, 4, T> inv;
-		// inv 행렬 채우기 및 행렬식(Det) 나누기
-		// inv = adj(m) / Det(m)
-		return inv;
 	}
 }
 

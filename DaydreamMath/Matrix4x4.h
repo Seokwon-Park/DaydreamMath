@@ -86,7 +86,7 @@ namespace Daydream
 			*this = (*this) * _other;
 			return *this;
 		}
-		Vector<4, T> operator*(const Vector<4, T> _vec) const;
+		Vector4 operator*(const Vector4 _vec) const;
 
 		Matrix Transposed() const
 		{
