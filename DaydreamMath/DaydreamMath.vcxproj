@@ -138,6 +138,7 @@
     <ClInclude Include="SIMD.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
+    <ClInclude Include="Vector3Impl.h" />
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="VectorMath.h" />
   </ItemGroup>

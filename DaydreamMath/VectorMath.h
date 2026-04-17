@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Fwd.h"
 #include "Vector2.h"
 #include "Vector3.h"
 #include "Vector4.h"
@@ -30,6 +29,22 @@ namespace Daydream
 	{
 		Vector<N, T> result;
 		for (UInt64 i = 0; i < N; i++) result[i] = Clamp(_v[i], _min[i], _max[i]);
+		return result;
+	}
+
+	template <UInt64 N, std::floating_point T>
+	[[nodiscard]] inline Vector<N, T> DegreeToRadian(const Vector<N, T>& _degrees)
+	{
+		Vector<N, T> result;
+		for (UInt64 i = 0; i < N; i++) result[i] = _degrees[i] * DegToRad<T>;
+		return result;
+	}
+
+	template <UInt64 N, std::floating_point T>
+	[[nodiscard]] inline Vector<N, T> RadianToDegree(const Vector<N, T>& _radians)
+	{
+		Vector<N, T> result;
+		for (UInt64 i = 0; i < N; i++) result[i] = _degrees[i] * DegToRad<T>;
 		return result;
 	}
 
@@ -83,9 +98,4 @@ namespace Daydream
 		_vector = Normalized(_vector);
 	}
 
-	template <typename T>
-	inline Vector<3, T> operator*(const Vector<3, T>& _v, const Matrix<4, 4, T>& _m) = delete;
 
-	template <typename T>
-	inline Vector<3, T> operator*(const Matrix<4, 4, T>& _m, const Vector<3, T>& _v) = delete;
-}

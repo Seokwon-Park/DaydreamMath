@@ -110,8 +110,8 @@ namespace Daydream
 		// View Transform = (R * T)^-1 scale 생략
 		// = T^-1 * R^-1
 		Vector<3, T> Look = _direction.Normalized();
-		Vector<3, T> Right = Cross(_up, Look).Normalized();
-		Vector<3, T> Up = Cross(Right, Look);
+		Vector<3, T> Right = Vector<3,T>::Cross(_up, Look).Normalized();
+		Vector<3, T> Up = Vector<3, T>::Cross(Right, Look);
 
 		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
 		mat[0][0] = Right.x; mat[0][1] = Right.y; mat[0][2] = Right.z;
@@ -181,29 +181,7 @@ namespace Daydream
 
 	// --- 3. 행렬 분해 (Decompose) ---
 	// 4x4 행렬 하나에서 이동(P), 회전(R), 크기(S)를 역추적해서 뽑아냅니다.
-	template <typename T>
-	void Matrix<4, 4, T>::Decompose(const Matrix<4, 4, T>& _world, Vector<3, T>& _outPosition, Quat<T>& _outRotation, Vector<3, T>& _outScale)
-	{
-		// 1. 위치(Position)는 4번째 열에서 바로 쏙 빼옵니다.
-		_outPosition = Vector<3, T>(_world[0][3], _world[1][3], _world[2][3]);
 
-		// 2. 스케일(Scale)은 1, 2, 3번째 열 벡터의 길이를 구하면 됩니다.
-		Vector<3, T> xaxis(_world[0][0], _world[1][0], _world[2][0]);
-		Vector<3, T> yaxis(_world[0][1], _world[1][1], _world[2][1]);
-		Vector<3, T> zaxis(_world[0][2], _world[1][2], _world[2][2]);
-
-		_outScale.x = xaxis.Length();
-		_outScale.y = yaxis.Length();
-		_outScale.z = zaxis.Length();
-
-		// 3. 회전 행렬만 순수하게 남기기 위해 스케일로 나눠줍니다.
-		if (_outScale.x > 0) xaxis /= _outScale.x;
-		if (_outScale.y > 0) yaxis /= _outScale.y;
-		if (_outScale.z > 0) zaxis /= _outScale.z;
-
-		// 4. 순수 회전 행렬을 쿼터니언으로 변환 (여기서는 함수 호출로 대체)
-		_outRotation = Quat<T>::MatrixToQuaternion(xaxis, yaxis, zaxis);
-	}
 }
 
 

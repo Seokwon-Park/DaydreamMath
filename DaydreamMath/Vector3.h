@@ -134,6 +134,8 @@ namespace Daydream
 				_a.x * _b.y - _a.y * _b.x
 			);
 		}
+
+		static Vector<3,T> Rotate(const Quat<T>& _quat, const Vector<3, T> _vector);
 	};
 
 	template<typename T>

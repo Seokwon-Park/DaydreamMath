@@ -83,7 +83,6 @@ namespace Daydream
 
 		Vector<4, T> operator*(const Vector<4, T> _vec) const;
 
-
 		Matrix Transposed() const
 		{
 			Matrix result{};
@@ -95,6 +94,11 @@ namespace Daydream
 				}
 			}
 			return result;
+		}
+
+		void Transpose()
+		{
+			*this = Transposed();
 		}
 
 		//Matrix4x4 operator*(const Matrix4x4& _matrix) const;
@@ -113,6 +117,5 @@ namespace Daydream
 		static Matrix CreateOrthographicLH(T _width, T _height, T _near, T _far);
 		static Matrix CreateTranspose(const Matrix<4, 4, T>& _m);
 		static Matrix CreateInverse(const Matrix<4, 4, T>& m);
-		static void Decompose(const Matrix<4, 4, T>& _world, Vector<3, T>& _outPosition, Quat<T>& _outRotation, Vector<3, T>& _outScale);
 	};
 }
