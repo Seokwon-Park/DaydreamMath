@@ -266,7 +266,7 @@ namespace Daydream
 	}
 
 	template <typename T>
-	Matrix<4, 4, T> Matrix<4, 4, T>::CreateTranspose(const Matrix<4, 4, T>& _m)
+	Matrix<4, 4, T> Matrix<4, 4, T>::Transposed(const Matrix<4, 4, T>& _m)
 	{
 		Matrix<4, 4, T> result;
 		for (int r = 0; r < 4; ++r)
@@ -277,7 +277,7 @@ namespace Daydream
 
 	// --- 2. 역행렬 (Inverse) ---
 	template <typename T>
-	Matrix<4, 4, T> Matrix<4, 4, T>::CreateInverse(const Matrix<4, 4, T>& m)
+	Matrix<4, 4, T> Matrix<4, 4, T>::Inversed(const Matrix<4, 4, T>& m)
 	{
 		// 1. 소행렬식(Cofactor)을 이용한 행렬식(Determinant) 계산 및 여인수 행렬 도출
 		// (코드가 너무 길어지므로 가장 대중적이고 빠르고 안전한 Cramer's Rule 방식의 뼈대입니다)

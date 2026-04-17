@@ -23,6 +23,11 @@ namespace Daydream
 			mat[3][3] = static_cast<T>(1);
 		}
 
+		explicit Matrix(const T* _dataPtr)
+		{
+			std::memcpy(values, _dataPtr, sizeof(T) * 16);
+		}
+
 		Matrix(std::initializer_list<T> _values)
 		{
 			assert(_values.size() <= 16 && "initializer list size must be less than or equal to 16");
@@ -81,7 +86,6 @@ namespace Daydream
 			*this = (*this) * _other;
 			return *this;
 		}
-
 		Vector<4, T> operator*(const Vector<4, T> _vec) const;
 
 		Matrix Transposed() const
@@ -124,7 +128,7 @@ namespace Daydream
 		static Matrix CreatePerspectiveLH(T _fovy, T _aspect, T _near, T _far);
 		static Matrix CreateOrthographicLH(T _left, T _right, T _bottom, T _top, T _near, T _far);
 		static Matrix CreateOrthographicLH(T _width, T _height, T _near, T _far);
-		static Matrix CreateTranspose(const Matrix<4, 4, T>& _m);
-		static Matrix CreateInverse(const Matrix<4, 4, T>& m);
+		static Matrix Transposed(const Matrix<4, 4, T>& _m);
+		static Matrix Inversed(const Matrix<4, 4, T>& m);
 	};
 }

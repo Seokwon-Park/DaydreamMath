@@ -42,13 +42,10 @@ namespace Daydream
 			T sr = std::sin(halfRoll);
 			T cr = std::cos(halfRoll);
 
-			// 3. Yaw -> Pitch -> Roll 순서로 곱해진 결과값
-			return Quat<T>(
-				sp * cy * cr - cp * sy * sr, // X
-				cp * sy * cr + sp * cy * sr, // Y
-				cp * cy * sr - sp * sy * cr, // Z
-				cp * cy * cr + sp * sy * sr  // W
-			);
+			x = sp * cy * cr - cp * sy * sr; // X
+			y = cp * sy * cr + sp * cy * sr; // Y
+			z = cp * cy * sr - sp * sy * cr; // Z
+			w = cp * cy * cr + sp * sy * sr;  // W
 		}
 
 		Quat(std::initializer_list<T> _values)
