@@ -70,6 +70,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -124,19 +127,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Color.h" />
     <ClInclude Include="Fwd.h" />
     <ClInclude Include="DaydreamMath.h" />
-    <ClInclude Include="MathUtility.h" />
-    <ClInclude Include="Types.h" />
-    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="BaseTypes.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="Matrix4x4.h" />
+    <ClInclude Include="Matrix4x4Impl.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="QuaternionImpl.h" />
     <ClInclude Include="SIMD.h" />
-    <ClInclude Include="Vector.h" />
     <ClInclude Include="Vector2.h" />
+    <ClInclude Include="Vector2Impl.h" />
     <ClInclude Include="Vector3.h" />
+    <ClInclude Include="Vector3Impl.h" />
     <ClInclude Include="Vector4.h" />
+    <ClInclude Include="Vector4Impl.h" />
+    <ClInclude Include="Vector4SIMD.h" />
+    <ClInclude Include="Vector4SIMDImpl.h" />
+    <ClInclude Include="VectorMath.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
