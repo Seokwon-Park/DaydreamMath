@@ -14,8 +14,8 @@ namespace Daydream
 	template <typename T>
 	Vector<3, T> Vector<3, T>::Rotate(const Quat<T>& _quat, const Vector<3, T> _vector)
 	{
-		Vector<3, T> qVec(_q.x, _q.y, _q.z);
+		Vector<3, T> qVec(_quat.x, _quat.y, _quat.z);
 		Vector<3, T> t = Cross(qVec, _v) * static_cast<T>(2.0);
-		return _v + (t * _q.w) + Cross(qVec, t);
+		return _vector + (t * _quat.w) + Cross(qVec, t);
 	}
 }
