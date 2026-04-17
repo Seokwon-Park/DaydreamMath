@@ -25,6 +25,96 @@ namespace Daydream
 		);
 	}
 
+	template <typename T>
+	Matrix<4, 4, T> Matrix<4, 4, T>::Inversed() const
+	{
+		// 1. 계산의 편의를 위해 1차원 배열처럼 원소들을 빼옵니다.
+		T m00 = mat[0][0], m01 = mat[0][1], m02 = mat[0][2], m03 = mat[0][3];
+		T m10 = mat[1][0], m11 = mat[1][1], m12 = mat[1][2], m13 = mat[1][3];
+		T m20 = mat[2][0], m21 = mat[2][1], m22 = mat[2][2], m23 = mat[2][3];
+		T m30 = mat[3][0], m31 = mat[3][1], m32 = mat[3][2], m33 = mat[3][3];
+
+		// 2. 2x2 부분 행렬식(Sub-determinants)들을 미리 계산해서 캐싱합니다. (중복 계산 방지!)
+		T coef00 = m22 * m33 - m32 * m23;
+		T coef02 = m12 * m33 - m32 * m13;
+		T coef03 = m12 * m23 - m22 * m13;
+
+		T coef04 = m21 * m33 - m31 * m23;
+		T coef06 = m11 * m33 - m31 * m13;
+		T coef07 = m11 * m23 - m21 * m13;
+
+		T coef08 = m21 * m32 - m31 * m22;
+		T coef10 = m11 * m32 - m31 * m12;
+		T coef11 = m11 * m22 - m21 * m12;
+
+		T coef12 = m20 * m33 - m30 * m23;
+		T coef14 = m10 * m33 - m30 * m13;
+		T coef15 = m10 * m23 - m20 * m13;
+
+		T coef16 = m20 * m32 - m30 * m22;
+		T coef18 = m10 * m32 - m30 * m12;
+		T coef19 = m10 * m22 - m20 * m12;
+
+		T coef20 = m20 * m31 - m30 * m21;
+		T coef22 = m10 * m31 - m30 * m11;
+		T coef23 = m10 * m21 - m20 * m11;
+
+		// 3. 수반 행렬(Adjugate Matrix)의 각 성분을 구합니다. (동시에 행과 열이 바뀌는 Transpose 효과 포함)
+		Vector<4, T> fac0(coef00, coef00, coef02, coef03);
+		Vector<4, T> fac1(coef04, coef04, coef06, coef07);
+		Vector<4, T> fac2(coef08, coef08, coef10, coef11);
+		Vector<4, T> fac3(coef12, coef12, coef14, coef15);
+		Vector<4, T> fac4(coef16, coef16, coef18, coef19);
+		Vector<4, T> fac5(coef20, coef20, coef22, coef23);
+
+		Vector<4, T> vec0(m10, m00, m00, m00);
+		Vector<4, T> vec1(m11, m01, m01, m01);
+		Vector<4, T> vec2(m12, m02, m02, m02);
+		Vector<4, T> vec3(m13, m03, m03, m03);
+
+		Vector<4, T> inv0(vec1.x * fac0.x - vec2.x * fac1.x + vec3.x * fac2.x,
+			vec2.y * fac1.y - vec1.y * fac0.y - vec3.y * fac2.y,
+			vec1.z * fac0.z - vec2.z * fac1.z + vec3.z * fac2.z,
+			vec2.w * fac1.w - vec1.w * fac0.w - vec3.w * fac2.w);
+
+		Vector<4, T> inv1(vec2.x * fac3.x - vec0.x * fac0.x - vec3.x * fac4.x,
+			vec0.y * fac0.y - vec2.y * fac3.y + vec3.y * fac4.y,
+			vec2.z * fac3.z - vec0.z * fac0.z - vec3.z * fac4.z,
+			vec0.w * fac0.w - vec2.w * fac3.w + vec3.w * fac4.w);
+
+		Vector<4, T> inv2(vec0.x * fac1.x - vec1.x * fac3.x + vec3.x * fac5.x,
+			vec1.y * fac3.y - vec0.y * fac1.y - vec3.y * fac5.y,
+			vec0.z * fac1.z - vec1.z * fac3.z + vec3.z * fac5.z,
+			vec1.w * fac3.w - vec0.w * fac1.w - vec3.w * fac5.w);
+
+		Vector<4, T> inv3(vec1.x * fac4.x - vec0.x * fac2.x - vec2.x * fac5.x,
+			vec0.y * fac2.y - vec1.y * fac4.y + vec2.y * fac5.y,
+			vec1.z * fac4.z - vec0.z * fac2.z - vec2.z * fac5.z,
+			vec0.w * fac2.w - vec1.w * fac4.w + vec2.w * fac5.w);
+
+		// 4. 전체 행렬식(Determinant)을 구합니다.
+		Vector<4, T> row0(inv0.x, inv1.x, inv2.x, inv3.x);
+		Vector<4, T> dot0(m00 * row0.x, m01 * row0.y, m02 * row0.z, m03 * row0.w);
+		T det = dot0.x + dot0.y + dot0.z + dot0.w;
+
+		// 5. 역행렬이 존재하지 않는 경우(det == 0) 방어 로직
+		if (std::abs(det) <= static_cast<T>(1e-6))
+		{
+			return Matrix<4, 4, T>::Identity(); // 터지는 것보단 단위 행렬 반환이 안전함
+		}
+
+		// 6. 각 원소를 행렬식으로 나누어 최종 역행렬을 완성합니다.
+		T invDet = static_cast<T>(1.0) / det;
+		Matrix<4, 4, T> result;
+
+		result.mat[0][0] = inv0.x * invDet; result.mat[0][1] = inv0.y * invDet; result.mat[0][2] = inv0.z * invDet; result.mat[0][3] = inv0.w * invDet;
+		result.mat[1][0] = inv1.x * invDet; result.mat[1][1] = inv1.y * invDet; result.mat[1][2] = inv1.z * invDet; result.mat[1][3] = inv1.w * invDet;
+		result.mat[2][0] = inv2.x * invDet; result.mat[2][1] = inv2.y * invDet; result.mat[2][2] = inv2.z * invDet; result.mat[2][3] = inv2.w * invDet;
+		result.mat[3][0] = inv3.x * invDet; result.mat[3][1] = inv3.y * invDet; result.mat[3][2] = inv3.z * invDet; result.mat[3][3] = inv3.w * invDet;
+
+		return result;
+	}
+
 	template<typename T>
 	inline Vector<3, T> Matrix<4, 4, T>::TransformPoint(const Vector<3, T>& _point) const
 	{
@@ -141,15 +231,50 @@ namespace Daydream
 		return mat;
 	}
 
+	template<typename T>
+	Matrix<4, 4, T> Matrix<4, 4, T>::CreateOrthographicLH(T _left, T _right, T _bottom, T _top, T _near, T _far)
+	{
+		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
+
+		// 1. 박스의 폭, 높이, 깊이를 구합니다.
+		T width = _right - _left;
+		T height = _top - _bottom;
+		T depth = _far - _near;
+
+		// 2. 크기를 -1 ~ 1 사이로 정규화(Scale) 합니다.
+		mat[0][0] = static_cast<T>(2.0) / width;
+		mat[1][1] = static_cast<T>(2.0) / height;
+		mat[2][2] = -static_cast<T>(2.0) / depth; // 오른손 좌표계는 Z축이 거꾸로라 마이너스가 붙습니다!
+
+		// 3. 중심점을 화면 한가운데로 이동(Translate) 시킵니다.
+		mat[3][0] = -(_right + _left) / width;
+		mat[3][1] = -(_top + _bottom) / height;
+		mat[3][2] = -(_far + _near) / depth;
+		mat[3][3] = static_cast<T>(1.0);
+
+		return mat;
+	}
+
 	template <typename T>
 	Matrix<4, 4, T> Matrix<4, 4, T>::CreateOrthographicLH(T _width, T _height, T _near, T _far)
 	{
-		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
-		mat[0][0] = static_cast<T>(2) / _width;
-		mat[1][1] = static_cast<T>(2) / _height;
-		mat[2][2] = static_cast<T>(1) / (_far - _near);
-		mat[2][3] = -_near / (_far - _near);
-		return mat;
+		// 중심(0,0)을 기준으로 좌우/상하를 절반씩 찢어서 코어 함수에 토스!
+		T halfW = _width / static_cast<T>(2.0);
+		T halfH = _height / static_cast<T>(2.0);
+
+		// (주의: LH-왼손좌표계 라면 Z축 방향 최적화가 RH와 약간 다를 수 있으나, 개념적으론 동일합니다)
+		return CreateOrthographic(-halfW, halfW, -halfH, halfH, _near, _far);
+	}
+
+	// 2. 3D 카메라용 (세로 사이즈 + 비율)
+	template <typename T>
+	Matrix<4, 4, T> Matrix<4, 4, T>::CreateOrthographicLH(T _size, T _aspectRatio, T _near, T _far)
+	{
+		// Size(보통 세로 크기)와 비율을 이용해 Width와 Height를 구한 뒤, 1번 함수로 다시 토스!
+		T height = _size;
+		T width = _size * _aspectRatio;
+
+		return CreateOrthographicLH(width, height, _near, _far);
 	}
 
 	template <typename T>

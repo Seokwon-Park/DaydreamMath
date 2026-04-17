@@ -7,10 +7,8 @@ namespace Daydream
 	template <typename T>
 	struct Quat
 	{
-	private:
 		T x, y, z, w;
 
-	public:
 		Quat()
 			: x(static_cast<T>(0)), y(static_cast<T>(0)), z(static_cast<T>(0)), w(static_cast<T>(1))
 		{

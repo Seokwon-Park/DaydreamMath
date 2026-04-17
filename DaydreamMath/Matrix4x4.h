@@ -46,7 +46,7 @@ namespace Daydream
 
 		Matrix operator*(const Matrix& _other) const
 		{
-			Matrix<4, 4, Float32> result;
+			Matrix<4, 4, T> result;
 
 			SIMDRegister b0 = SIMD::LoadUnaligned(_other.mat[0]);
 			SIMDRegister b1 = SIMD::LoadUnaligned(_other.mat[1]);
@@ -101,6 +101,14 @@ namespace Daydream
 			*this = Transposed();
 		}
 
+		Matrix Inversed() const;
+
+		void Inverse()
+		{
+			*this = Inversed();
+		}
+
+
 		//Matrix4x4 operator*(const Matrix4x4& _matrix) const;
 		//Vector4 operator*(Vector3 _vector) const;
 		//Vector4 operator*(Vector4 _vector) const;
@@ -114,7 +122,9 @@ namespace Daydream
 		static Matrix CreateScale(const Vector<3, T>& _scale);
 		static Matrix CreateLookToLH(const Vector<3, T>& _eye, const Vector<3, T>& _direction, const Vector<3, T>& _up);
 		static Matrix CreatePerspectiveLH(T _fovy, T _aspect, T _near, T _far);
+		static Matrix CreateOrthographicLH(T _left, T _right, T _bottom, T _top, T _near, T _far);
 		static Matrix CreateOrthographicLH(T _width, T _height, T _near, T _far);
+		static Matrix CreateOrthographicLH(T _size, T _aspectRatio, T _near, T _far);
 		static Matrix CreateTranspose(const Matrix<4, 4, T>& _m);
 		static Matrix CreateInverse(const Matrix<4, 4, T>& m);
 	};
