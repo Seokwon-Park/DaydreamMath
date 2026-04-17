@@ -273,6 +273,11 @@ namespace Daydream
 				result[r][c] = _m[c][r];
 		return result;
 	}
+	template<typename T>
+	inline Matrix<4, 4, T> Matrix<4, 4, T>::Inversed(const Matrix<4, 4, T>& m)
+	{
+		return m.Inversed();
+	}
 }
 
 
