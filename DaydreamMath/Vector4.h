@@ -111,7 +111,7 @@ namespace Daydream
 		[[nodiscard]] static Vector Min(const Vector& _a, const Vector& _b);
 		[[nodiscard]] static Vector Max(const Vector& _a, const Vector& _b);
 		[[nodiscard]] static Vector Clamp(const Vector& _vector, const Vector& _min, const Vector& _max);
-		[[nodiscard]] static Bool IsNearlyEqual(const Vector& _a, const Vector& _b, T _epsilon = Math::Epsilon<T>);
+		[[nodiscard]] static Bool IsNearlyEqual(const Vector& _a, const Vector& _b, T _epsilon = Math::GenericEpsilon<T>);
 
 		[[nodiscard]] T LengthSq() const;
 		[[nodiscard]] T Length() const;

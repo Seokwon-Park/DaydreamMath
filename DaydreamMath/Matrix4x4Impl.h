@@ -207,9 +207,9 @@ namespace Daydream
 		mat[1][0] = Up.x; mat[1][1] = Up.y; mat[1][2] = Up.z;
 		mat[2][0] = Look.x; mat[2][1] = Look.y; mat[2][2] = Look.z;
 
-		mat[0][3] = -Dot(Look, _eye);
-		mat[1][3] = -Dot(Right, _eye);
-		mat[2][3] = -Dot(Up, _eye);
+		mat[0][3] = -Vector3::Dot(Look, _eye);
+		mat[1][3] = -Vector3::Dot(Right, _eye);
+		mat[2][3] = -Vector3::Dot(Up, _eye);
 
 		return mat;
 	}
@@ -262,7 +262,7 @@ namespace Daydream
 		T halfH = _height / static_cast<T>(2.0);
 
 		// (주의: LH-왼손좌표계 라면 Z축 방향 최적화가 RH와 약간 다를 수 있으나, 개념적으론 동일합니다)
-		return CreateOrthographic(-halfW, halfW, -halfH, halfH, _near, _far);
+		return CreateOrthographicLH(-halfW, halfW, -halfH, halfH, _near, _far);
 	}
 
 	template <typename T>

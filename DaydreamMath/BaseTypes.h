@@ -29,23 +29,36 @@ namespace Daydream
 
 	namespace Math
 	{
-		// 템플릿 상수 정의 (기본값은 Float32)
-		template <typename T = Float32>
-		constexpr T PI = static_cast<T>(std::numbers::pi);
+		template <std::floating_point T>
+		constexpr T GenericPI = static_cast<T>(std::numbers::pi);
 
-		template <typename T = Float32>
-		constexpr T HalfPI = PI<T> *static_cast<T>(0.5);
+		template <std::floating_point T>
+		constexpr T GenericHalfPI = GenericPI<T> *static_cast<T>(0.5);
 
-		template <typename T = Float32>
-		constexpr T TwoPI = PI<T> *static_cast<T>(2.0);
+		template <std::floating_point T>
+		constexpr T GenericTwoPI = GenericPI<T> *static_cast<T>(2.0);
 
-		template <typename T = Float32>
-		constexpr T Epsilon = static_cast<T>(1e-5);
+		template <std::floating_point T>
+		constexpr T GenericEpsilon = static_cast<T>(1e-5);
 
-		template <typename T = Float32>
-		constexpr T DegToRad = PI<T> / static_cast<T>(180.0);
+		template <std::floating_point T>
+		constexpr T GenericDegToRad = GenericPI<T> / static_cast<T>(180.0);
 
-		template <typename T = Float32>
-		constexpr T RadToDeg = static_cast<T>(180.0) / PI<T>;
+		template <std::floating_point T>
+		constexpr T GenericRadToDeg = static_cast<T>(180.0) / GenericPI<T>;
+
+		constexpr Float32 PI = GenericPI<Float32>;
+		constexpr Float32 HalfPI = GenericHalfPI<Float32>;
+		constexpr Float32 TwoPI = GenericTwoPI<Float32>;
+		constexpr Float32 Epsilon = GenericEpsilon<Float32>;
+		constexpr Float32 DegToRad = GenericDegToRad<Float32>;
+		constexpr Float32 RadToDeg = GenericRadToDeg<Float32>;
+
+		constexpr Float64 PID = GenericPI<Float64>;
+		constexpr Float64 HalfPID = GenericHalfPI<Float64>;
+		constexpr Float64 TwoPID = GenericTwoPI<Float64>;
+		constexpr Float64 EpsilonD = static_cast<Float64>(1e-8);
+		constexpr Float64 DegToRadD = GenericDegToRad<Float64>;
+		constexpr Float64 RadToDegD = GenericRadToDeg<Float64>;
 	}
 }

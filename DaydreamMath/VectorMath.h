@@ -37,7 +37,7 @@ namespace Daydream
 		[[nodiscard]] inline Vector<N, T> DegreeToRadian(const Vector<N, T>& _degrees)
 		{
 			Vector<N, T> result;
-			for (UInt64 i = 0; i < N; i++) result[i] = _degrees[i] * DegToRad<T>;
+			for (UInt64 i = 0; i < N; i++) result[i] = _degrees[i] * GenericDegToRad<T>;
 			return result;
 		}
 
@@ -45,7 +45,7 @@ namespace Daydream
 		[[nodiscard]] inline Vector<N, T> RadianToDegree(const Vector<N, T>& _radians)
 		{
 			Vector<N, T> result;
-			for (UInt64 i = 0; i < N; i++) result[i] = _radians[i] * DegToRad<T>;
+			for (UInt64 i = 0; i < N; i++) result[i] = _radians[i] * GenericDegToRad<T>;
 			return result;
 		}
 
@@ -66,7 +66,7 @@ namespace Daydream
 		}
 
 		template <UInt64 N, std::floating_point T>
-		[[nodiscard]] inline Bool IsNearlyEqual(const Vector<N, T>& _a, const Vector<N, T>& _b, T _epsilon = Math::Epsilon<T>)
+		[[nodiscard]] inline Bool IsNearlyEqual(const Vector<N, T>& _a, const Vector<N, T>& _b, T _epsilon = Math::GenericEpsilon<T>)
 		{
 			for (UInt64 i = 0; i < N; i++)
 			{

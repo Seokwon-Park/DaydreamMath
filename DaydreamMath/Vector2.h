@@ -95,7 +95,7 @@ namespace Daydream
 		[[nodiscard]] static Vector RadianToDegree(const Vector& _radians);
 		[[nodiscard]] static Vector Cos(const Vector& _radians);
 		[[nodiscard]] static Vector CosDegree(const Vector& _degrees);
-		[[nodiscard]] static Bool IsNearlyEqual(const Vector& _a, const Vector& _b, T _epsilon = Math::Epsilon<T>);
+		[[nodiscard]] static Bool IsNearlyEqual(const Vector& _a, const Vector& _b, T _epsilon = Math::GenericEpsilon<T>);
 
 		[[nodiscard]] T LengthSq() const;
 		[[nodiscard]] T Length() const;

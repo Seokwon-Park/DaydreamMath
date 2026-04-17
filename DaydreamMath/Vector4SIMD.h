@@ -90,7 +90,7 @@ namespace Daydream
 		[[nodiscard]] static Vector Min(const Vector& _a, const Vector& _b);
 		[[nodiscard]] static Vector Max(const Vector& _a, const Vector& _b);
 		[[nodiscard]] static Vector Clamp(const Vector& _vector, const Vector& _min, const Vector& _max);
-		[[nodiscard]] static Bool IsNearlyEqual(const Vector& _a, const Vector& _b, Float32 _epsilon = Math::Epsilon<Float32>);
+		[[nodiscard]] static Bool IsNearlyEqual(const Vector& _a, const Vector& _b, Float32 _epsilon = Math::Epsilon);
 
 		[[nodiscard]] Float32 LengthSq() const;
 		[[nodiscard]] Float32 Length() const;

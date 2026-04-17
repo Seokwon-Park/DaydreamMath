@@ -29,13 +29,13 @@ namespace Daydream
 		template <typename T>
 		[[nodiscard]] inline T DegreeToRadian(const T& _degrees)
 		{
-			return _degrees * DegToRad<T>;
+			return _degrees * GenericDegToRad<T>;
 		}
 
 		template <typename T>
 		[[nodiscard]] inline T RadianToDegree(const T& _radians)
 		{
-			return _radians * RadToDeg<T>;
+			return _radians * GenericRadToDeg<T>;
 		}
 
 		template <std::floating_point T>
@@ -52,7 +52,7 @@ namespace Daydream
 		}
 
 		template <std::floating_point T>
-		[[nodiscard]] inline Bool IsNearlyEqual(T _a, T _b, T _epsilon = Math::Epsilon<T>)
+		[[nodiscard]] inline Bool IsNearlyEqual(T _a, T _b, T _epsilon = Math::GenericEpsilon<T>)
 		{
 			return std::abs(_a - _b) <= _epsilon;
 		}
