@@ -5,17 +5,17 @@
 namespace Daydream
 {
 
-	Vector4 Vector4::Min(const Vector& _a, const Vector& _b)
+	inline Vector4 Vector4::Min(const Vector& _a, const Vector& _b)
 	{
 		return SIMD::Min(_a.reg, _b.reg);
 	}
 
-	Vector4 Vector4::Max(const Vector& _a, const Vector& _b)
+	inline Vector4 Vector4::Max(const Vector& _a, const Vector& _b)
 	{
 		return SIMD::Max(_a.reg, _b.reg);
 	}
 
-	Vector4 Vector4::Clamp(const Vector& _vector, const Vector& _min, const Vector& _max)
+	inline Vector4 Vector4::Clamp(const Vector& _vector, const Vector& _min, const Vector& _max)
 	{
 		// 1. _vector와 _min 중 더 '큰' 값을 고른다 (하한선 방어)
 		SIMDRegister clampedBottom = SIMD::Max(_vector.reg, _min.reg);
@@ -41,17 +41,17 @@ namespace Daydream
 		return std::sqrt(LengthSq());
 	}
 
-	Float32  Vector4::LengthSq(const Vector& _vector)
+	inline Float32  Vector4::LengthSq(const Vector& _vector)
 	{
 		return _vector.LengthSq();
 	}
 
-	Float32  Vector4::Length(const Vector& _vector)
+	inline Float32  Vector4::Length(const Vector& _vector)
 	{
 		return _vector.Length();
 	}
 
-	Vector4 Vector4::Normalized() const
+	inline Vector4 Vector4::Normalized() const
 	{
 		Float32 lenSq = LengthSq();
 
@@ -69,27 +69,27 @@ namespace Daydream
 		return Vector4(SIMD::Div(reg, SIMD::SetVal(len)));
 	}
 
-	Vector4 Vector4::Normalized(const Vector& _vector)
+	inline Vector4 Vector4::Normalized(const Vector& _vector)
 	{
 		return _vector.Normalized();
 	}
 
-	void Vector4::Normalize()
+	inline void Vector4::Normalize()
 	{
 		reg = Normalized().reg;
 	}
 
-	[[nodiscard]] Float32 Vector4::Dot(const Vector& _a, const Vector& _b)
+	[[nodiscard]] inline Float32 Vector4::Dot(const Vector& _a, const Vector& _b)
 	{
 		return SIMD::Dot(_a.reg, _b.reg);
 	}
 
-	Float32 Vector4::DistanceSq(const Vector& _a, const Vector& _b)
+	inline Float32 Vector4::DistanceSq(const Vector& _a, const Vector& _b)
 	{
 		SIMDRegister diff = SIMD::Sub(_a.reg, _b.reg);
 		return SIMD::Dot(diff, diff);
 	}
-	Float32 Vector4::Distance(const Vector& _a, const Vector& _b)
+	inline Float32 Vector4::Distance(const Vector& _a, const Vector& _b)
 	{
 		// 거리의 제곱에 표준 루트 함수를 씌웁니다.
 		return std::sqrt(DistanceSq(_a, _b));

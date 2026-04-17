@@ -10,7 +10,7 @@
 namespace Daydream
 {
 	template<typename T>
-	Vector<4, T> Matrix<4, 4, T>::operator*(const Vector<4, T> _vec) const
+	inline Vector<4, T> Matrix<4, 4, T>::operator*(const Vector<4, T> _vec) const
 	{
 		SIMDRegister row0 = SIMD::LoadUnaligned(mat[0]);
 		SIMDRegister row1 = SIMD::LoadUnaligned(mat[1]);
@@ -26,7 +26,7 @@ namespace Daydream
 	}
 
 	template <typename T>
-	Matrix<4, 4, T> Matrix<4, 4, T>::Inversed() const
+	inline Matrix<4, 4, T> Matrix<4, 4, T>::Inversed() const
 	{
 		T m00 = mat[0][0], m01 = mat[0][1], m02 = mat[0][2], m03 = mat[0][3];
 		T m10 = mat[1][0], m11 = mat[1][1], m12 = mat[1][2], m13 = mat[1][3];
@@ -129,7 +129,7 @@ namespace Daydream
 	}
 
 	template<typename T>
-	Vector<3, T> Matrix<4, 4, T>::TransformVector(const Vector<3, T>& _vector) const
+	inline Vector<3, T> Matrix<4, 4, T>::TransformVector(const Vector<3, T>& _vector) const
 	{
 		return Vector<3, T>(
 			mat[0][0] * _vector.x + mat[0][1] * _vector.y + mat[0][2] * _vector.z,
@@ -138,7 +138,7 @@ namespace Daydream
 	}
 
 	template <typename T>
-	Matrix<4, 4, T> Matrix<4, 4, T>::CreateTranslation(const Vector<3, T>& _translation)
+	inline Matrix<4, 4, T> Matrix<4, 4, T>::CreateTranslation(const Vector<3, T>& _translation)
 	{
 		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
 		mat[0][3] = _translation.x;
@@ -149,7 +149,7 @@ namespace Daydream
 
 
 	template <typename T>
-	Matrix<4, 4, T> Matrix<4, 4, T>::CreateRotation(const Quat<T>& _quat)
+	inline Matrix<4, 4, T> Matrix<4, 4, T>::CreateRotation(const Quat<T>& _quat)
 	{
 		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
 
@@ -183,7 +183,7 @@ namespace Daydream
 	}
 
 	template <typename T>
-	Matrix<4, 4, T> Matrix<4, 4, T>::CreateScale(const Vector<3, T>& _scale)
+	inline Matrix<4, 4, T> Matrix<4, 4, T>::CreateScale(const Vector<3, T>& _scale)
 	{
 		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
 		mat[0][0] = _scale.x;
@@ -193,7 +193,7 @@ namespace Daydream
 	}
 
 	template <typename T>
-	Matrix<4, 4, T> Matrix<4, 4, T>::CreateLookToLH(const Vector<3, T>& _eye, const Vector<3, T>& _direction, const Vector<3, T>& _up)
+	inline Matrix<4, 4, T> Matrix<4, 4, T>::CreateLookToLH(const Vector<3, T>& _eye, const Vector<3, T>& _direction, const Vector<3, T>& _up)
 	{
 		// World Transform = S(cale) * R(otation) * T(ranslation)
 		// View Transform = (R * T)^-1 scale 생략
@@ -215,7 +215,7 @@ namespace Daydream
 	}
 
 	template <typename T>
-	Matrix<4, 4, T> Matrix<4, 4, T>::CreatePerspectiveLH(T _fovy, T _aspect, T _near, T _far)
+	inline Matrix<4, 4, T> Matrix<4, 4, T>::CreatePerspectiveLH(T _fovy, T _aspect, T _near, T _far)
 	{
 		Matrix<4, 4, T> mat; // Zero 초기화라고 가정
 		T tanHalfFovy = std::tan(_fovy * static_cast<T>(0.5));
@@ -231,7 +231,7 @@ namespace Daydream
 	}
 
 	template<typename T>
-	Matrix<4, 4, T> Matrix<4, 4, T>::CreateOrthographicLH(T _left, T _right, T _bottom, T _top, T _near, T _far)
+	inline Matrix<4, 4, T> Matrix<4, 4, T>::CreateOrthographicLH(T _left, T _right, T _bottom, T _top, T _near, T _far)
 	{
 		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
 
@@ -255,7 +255,7 @@ namespace Daydream
 	}
 
 	template <typename T>
-	Matrix<4, 4, T> Matrix<4, 4, T>::CreateOrthographicLH(T _width, T _height, T _near, T _far)
+	inline Matrix<4, 4, T> Matrix<4, 4, T>::CreateOrthographicLH(T _width, T _height, T _near, T _far)
 	{
 		// 중심(0,0)을 기준으로 좌우/상하를 절반씩 찢어서 코어 함수에 토스!
 		T halfW = _width / static_cast<T>(2.0);
@@ -266,7 +266,7 @@ namespace Daydream
 	}
 
 	template <typename T>
-	Matrix<4, 4, T> Matrix<4, 4, T>::Transposed(const Matrix<4, 4, T>& _m)
+	inline Matrix<4, 4, T> Matrix<4, 4, T>::Transposed(const Matrix<4, 4, T>& _m)
 	{
 		Matrix<4, 4, T> result;
 		for (int r = 0; r < 4; ++r)
@@ -277,7 +277,7 @@ namespace Daydream
 
 	// --- 2. 역행렬 (Inverse) ---
 	template <typename T>
-	Matrix<4, 4, T> Matrix<4, 4, T>::Inversed(const Matrix<4, 4, T>& m)
+	inline Matrix<4, 4, T> Matrix<4, 4, T>::Inversed(const Matrix<4, 4, T>& m)
 	{
 		// 1. 소행렬식(Cofactor)을 이용한 행렬식(Determinant) 계산 및 여인수 행렬 도출
 		// (코드가 너무 길어지므로 가장 대중적이고 빠르고 안전한 Cramer's Rule 방식의 뼈대입니다)

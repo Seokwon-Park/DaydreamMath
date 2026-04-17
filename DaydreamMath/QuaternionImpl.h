@@ -26,7 +26,7 @@ namespace Daydream
 	}
 
 	template <typename T>
-	Quat<T> Quat<T>::Slerp(const Quat<T>& _quatA, const Quat<T>& _quatB, T _t)
+	inline Quat<T> Quat<T>::Slerp(const Quat<T>& _quatA, const Quat<T>& _quatB, T _t)
 	{
 		Quat<T> q3 = _quatB;
 		T cosTheta = Dot(_quatA, _quatB);
@@ -75,7 +75,7 @@ namespace Daydream
 	//https://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/
 	// 아몰랑 그냥 식만 베껴
 	template <typename T>
-	Quat<T> Quat<T>::CreateFromMatrix(const Matrix<4, 4, T>& _matrix)
+	inline Quat<T> Quat<T>::CreateFromMatrix(const Matrix<4, 4, T>& _matrix)
 	{
 		T trace = _matrix.mat[0][0] + _matrix.mat[1][1] + _matrix.mat[2][2];
 
@@ -136,7 +136,7 @@ namespace Daydream
 		}
 	}
 	template <typename T>
-	Quat<T> Quat<T>::CreateFromAxis(const Vector<3, T>& _xAxis, const Vector<3, T>& _yAxis, const Vector<3, T>& _zAxis)
+	inline Quat<T> Quat<T>::CreateFromAxis(const Vector<3, T>& _xAxis, const Vector<3, T>& _yAxis, const Vector<3, T>& _zAxis)
 	{
 		// 1. 빈 단위 행렬(포장지)을 하나 가져옵니다.
 		Matrix<4, 4, T> tempMat = Matrix<4, 4, T>::Identity();
@@ -150,7 +150,7 @@ namespace Daydream
 		return CreateFromMatrix(tempMat);
 	}
 	template<typename T>
-	Quat<T> Quat<T>::CreateFromEuler(const Vector<3, T>& _euler)
+	inline Quat<T> Quat<T>::CreateFromEuler(const Vector<3, T>& _euler)
 	{
 		// 1. 각도를 반으로 나눔
 		T halfPitch = _euler.x * static_cast<T>(0.5);
