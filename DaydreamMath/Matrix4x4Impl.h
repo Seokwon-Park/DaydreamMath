@@ -198,9 +198,9 @@ namespace Daydream
 		// World Transform = S(cale) * R(otation) * T(ranslation)
 		// View Transform = (R * T)^-1 scale »ý·«
 		// = T^-1 * R^-1
-		Vector<3, T> Look = _direction.Normalized();
-		Vector<3, T> Right = Vector<3, T>::Cross(_up, Look).Normalized();
-		Vector<3, T> Up = Vector<3, T>::Cross(Right, Look);
+		Vector<3, T> Look = Vector<3, T>::Normalized(_direction);
+		Vector<3, T> Right = Vector<3, T>::Normalized(Cross(_up, Look));
+		Vector<3, T> Up = Vector<3, T>::Cross(Look, Right);
 
 		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
 		mat[0][0] = Right.x; mat[0][1] = Right.y; mat[0][2] = Right.z;

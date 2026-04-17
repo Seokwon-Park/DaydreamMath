@@ -73,39 +73,40 @@ namespace Daydream
 		T& operator[](UInt64 _index) { return values[_index]; }
 		const T& operator[](UInt64 _index) const { return values[_index]; }
 
-		inline Vector operator-() const { return Vector(-x, -y, -z); }
-		inline Vector operator+(const Vector& _other) const { return Vector(x + _other.x, y + _other.y, z + _other.z); }
-		inline Vector operator-(const Vector& _other) const { return Vector(x - _other.x, y - _other.y, z - _other.z); }
-		inline Vector operator*(const Vector& _other) const { return Vector(x * _other.x, y * _other.y, z * _other.z); }
-		inline Vector operator/(const Vector& _other) const { return Vector(x / _other.x, y / _other.y, z / _other.z); }
+		inline Vector operator-() const { return Vector(-x, -y, -z, -w); }
+		inline Vector operator+(const Vector& _other) const { return Vector(x + _other.x, y + _other.y, z + _other.z, w + _other.w); }
+		inline Vector operator-(const Vector& _other) const { return Vector(x - _other.x, y - _other.y, z - _other.z, w - _other.w); }
+		inline Vector operator*(const Vector& _other) const { return Vector(x * _other.x, y * _other.y, z * _other.z, w * _other.w); }
+		inline Vector operator/(const Vector& _other) const { return Vector(x / _other.x, y / _other.y, z / _other.z, w / _other.w); }
 
-		inline Vector operator+(T _scalar) const { return Vector(x + _scalar, y + _scalar, z + _scalar); }
-		inline Vector operator-(T _scalar) const { return Vector(x - _scalar, y - _scalar, z - _scalar); }
-		inline Vector operator*(T _scalar) const { return Vector(x * _scalar, y * _scalar, z * _scalar); }
+		inline Vector operator+(T _scalar) const { return Vector(x + _scalar, y + _scalar, z + _scalar, w + _scalar); }
+		inline Vector operator-(T _scalar) const { return Vector(x - _scalar, y - _scalar, z - _scalar, w - _scalar); }
+		inline Vector operator*(T _scalar) const { return Vector(x * _scalar, y * _scalar, z * _scalar, w * _scalar); }
 		inline Vector operator/(T _scalar) const
 		{
 			T inv = static_cast<T>(1.0) / _scalar;
 			return Vector(x * inv, y * inv, z * inv);
 		}
 
-		inline Vector& operator+=(const Vector& _other) { x += _other.x; y += _other.y; z += _other.z; return *this; }
-		inline Vector& operator-=(const Vector& _other) { x -= _other.x; y -= _other.y; z -= _other.z; return *this; }
-		inline Vector& operator*=(const Vector& _other) { x *= _other.x; y *= _other.y; z *= _other.z; return *this; }
-		inline Vector& operator/=(const Vector& _other) { x /= _other.x; y /= _other.y; z /= _other.z; return *this; }
+		inline Vector& operator+=(const Vector& _other) { x += _other.x; y += _other.y; z += _other.z; w += _other.w; return *this; }
+		inline Vector& operator-=(const Vector& _other) { x -= _other.x; y -= _other.y; z -= _other.z; w -= _other.w; return *this; }
+		inline Vector& operator*=(const Vector& _other) { x *= _other.x; y *= _other.y; z *= _other.z; w *= _other.w; return *this; }
+		inline Vector& operator/=(const Vector& _other) { x /= _other.x; y /= _other.y; z /= _other.z; w /= _other.w; return *this; }
 
-		inline Vector& operator+=(T _scalar) { x += _scalar; y += _scalar; z += _scalar; return *this; }
-		inline Vector& operator-=(T _scalar) { x -= _scalar; y -= _scalar; z -= _scalar; return *this; }
-		inline Vector& operator*=(T _scalar) { x *= _scalar; y *= _scalar; z *= _scalar; return *this; }
+		inline Vector& operator+=(T _scalar) { x += _scalar; y += _scalar; z += _scalar; w += _scalar; return *this; }
+		inline Vector& operator-=(T _scalar) { x -= _scalar; y -= _scalar; z -= _scalar; w -= _scalar; return *this; }
+		inline Vector& operator*=(T _scalar) { x *= _scalar; y *= _scalar; z *= _scalar; w *= _scalar; return *this; }
 		inline Vector& operator/=(T _scalar)
 		{
 			T inv = static_cast<T>(1.0) / _scalar;
 			x *= inv;
 			y *= inv;
 			z *= inv;
+			w *= inv;
 			return *this;
 		}
 
-		bool operator==(const Vector& _other) const { return x == _other.x && y == _other.y && z == _other.z; }
+		bool operator==(const Vector& _other) const { return x == _other.x && y == _other.y && z == _other.z && w == _other.w; }
 		bool operator!=(const Vector& _other) const { return !(*this == _other); }
 
 		[[nodiscard]] static Vector Min(const Vector& _a, const Vector& _b);
