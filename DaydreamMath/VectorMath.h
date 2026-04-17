@@ -121,5 +121,50 @@ namespace Daydream
 		{
 			_vector = Normalized(_vector);
 		}
+
+		template<typename T>
+		[[nodiscard]] inline Vector<3,T> RotateX(const Vector<3, T>& _vector, Float32 _radian)
+		{
+			Vector<3, T> result = _vector;
+			result.y = _vector.y * std::cos(_radian) - _vector.z * std::sin(_radian);
+			result.z = _vector.y * std::sin(_radian) + _vector.z * std::cos(_radian);
+			return result;
+		}
+
+		template<typename T>
+		[[nodiscard]] inline Vector<3, T> RotateY(const Vector<3, T>& _vector, Float32 _radian)
+		{
+			Vector<3, T> result = _vector;
+			result.z = _vector.z * std::cos(_radian) - _vector.x * std::sin(_radian);
+			result.x = _vector.z * std::sin(_radian) + _vector.x * std::cos(_radian);
+			return result;
+		}
+
+		template<typename T>
+		[[nodiscard]] inline Vector<3, T> RotateZ(const Vector<3, T>& _vector, Float32 _radian)
+		{
+			Vector<3, T> result = _vector;
+			result.x = _vector.x * std::cos(_radian) - _vector.y * std::sin(_radian);
+			result.y = _vector.x * std::sin(_radian) + _vector.y * std::cos(_radian);
+			return result;
+		}
+
+		template<typename T>
+		[[nodiscard]] inline Vector<3, T> RotateXDeg(const Vector<3, T>& _vector, Float32 _degree)
+		{
+			return RotateX(_vector, DegToRad * _degree);
+		}
+
+		template<typename T>
+		[[nodiscard]] inline Vector<3, T> RotateYDeg(const Vector<3, T>& _vector, Float32 _degree)
+		{
+			return RotateY(_vector, DegToRad * _degree);
+		}
+
+		template<typename T>
+		[[nodiscard]] inline Vector<3, T> RotateZDeg(const Vector<3, T>& _vector, Float32 _degree)
+		{
+			return RotateZ(_vector, DegToRad * _degree);
+		}
 	}
 }

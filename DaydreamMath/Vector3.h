@@ -108,10 +108,6 @@ namespace Daydream
 		[[nodiscard]] static Vector Min(const Vector& _a, const Vector& _b);
 		[[nodiscard]] static Vector Max(const Vector& _a, const Vector& _b);
 		[[nodiscard]] static Vector Clamp(const Vector& _vector, const Vector& _min, const Vector& _max);
-		[[nodiscard]] static Vector DegreeToRadian(const Vector& _degrees);
-		[[nodiscard]] static Vector RadianToDegree(const Vector& _radians);
-		[[nodiscard]] static Vector Cos(const Vector& _radians);
-		[[nodiscard]] static Vector CosDegree(const Vector& _degrees);
 		[[nodiscard]] static Bool IsNearlyEqual(const Vector& _a, const Vector& _b, T _epsilon = Math::GenericEpsilon<T>);
 
 		[[nodiscard]] T LengthSq() const;
@@ -127,7 +123,6 @@ namespace Daydream
 		[[nodiscard]] static Vector Cross(const Vector& _a, const Vector& _b);
 		[[nodiscard]] static T DistanceSq(const Vector& _a, const Vector& _b);
 		[[nodiscard]] static T Distance(const Vector& _a, const Vector& _b);
-		[[nodiscard]] static Vector Rotate(const Quat<T>& _quat, const Vector _vector);
 	};
 
 	template<typename T>

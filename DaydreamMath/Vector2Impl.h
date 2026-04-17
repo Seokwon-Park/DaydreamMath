@@ -24,27 +24,6 @@ namespace Daydream
 	}
 
 	template<typename T>
-	inline Vector<2, T> Vector<2, T>::DegreeToRadian(const Vector& _degrees)
-	{
-		return Math::DegreeToRadian(_degrees);
-	}
-	template<typename T>
-	inline Vector<2, T> Vector<2, T>::RadianToDegree(const Vector& _radians)
-	{
-		return Math::RadianToDegree(_radians);
-	}
-	template<typename T>
-	inline Vector<2, T> Vector<2, T>::Cos(const Vector& _radians)
-	{
-		return Math::Cos(_radians);
-	}
-	template<typename T>
-	inline Vector<2, T> Vector<2, T>::CosDegree(const Vector& _degrees)
-	{
-		return Math::Cos(_degrees);
-	}
-
-	template<typename T>
 	Bool Vector<2, T>::IsNearlyEqual(const Vector& _a, const Vector& _b, T _epsilon)
 	{
 		return Math::IsNearlyEqual(_a, _b, _epsilon);

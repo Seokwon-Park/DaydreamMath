@@ -291,10 +291,6 @@ namespace Daydream
 		// inv = adj(m) / Det(m)
 		return inv;
 	}
-
-	// --- 3. 행렬 분해 (Decompose) ---
-	// 4x4 행렬 하나에서 이동(P), 회전(R), 크기(S)를 역추적해서 뽑아냅니다.
-
 }
 
 

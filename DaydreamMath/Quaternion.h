@@ -163,6 +163,9 @@ namespace Daydream
 		{
 			*this = Normalized();
 		}
+
+		[[nodiscard]] static Vector<3,T> RotateVector(const Quat<T>& _quat, const Vector<3, T> _vector);
+
 	};
 
 	template <typename T>

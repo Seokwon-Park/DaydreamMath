@@ -30,27 +30,6 @@ namespace Daydream
 	}
 
 	template<typename T>
-	inline Vector<3, T> Vector<3, T>::DegreeToRadian(const Vector& _degrees)
-	{
-		return Math::DegreeToRadian(_degrees);
-	}
-	template<typename T>
-	inline Vector<3, T> Vector<3, T>::RadianToDegree(const Vector& _radians)
-	{
-		return Math::RadianToDegree(_radians);
-	}
-	template<typename T>
-	inline Vector<3, T> Vector<3, T>::Cos(const Vector& _radians)
-	{
-		return Math::Cos(_radians);
-	}
-	template<typename T>
-	inline Vector<3, T> Vector<3, T>::CosDegree(const Vector& _degrees)
-	{
-		return Math::Cos(_degrees);
-	}
-
-	template<typename T>
 	Bool Vector<3, T>::IsNearlyEqual(const Vector& _a, const Vector& _b, T _epsilon)
 	{
 		return Math::IsNearlyEqual(_a, _b, _epsilon);
@@ -125,11 +104,5 @@ namespace Daydream
 		);
 	}
 
-	template <typename T>
-	Vector<3, T> Vector<3, T>::Rotate(const Quat<T>& _quat, const Vector _vector)
-	{
-		Vector qVec(_quat.x, _quat.y, _quat.z);
-		Vector t = Cross(qVec, _vector) * static_cast<T>(2.0);
-		return _vector + (t * _quat.w) + Cross(qVec, t);
-	}
+
 }
