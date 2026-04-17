@@ -97,5 +97,4 @@ namespace Daydream
 	{
 		_vector = Normalized(_vector);
 	}
-
-
+}
