@@ -44,7 +44,7 @@ namespace Daydream
 	[[nodiscard]] inline Vector<N, T> RadianToDegree(const Vector<N, T>& _radians)
 	{
 		Vector<N, T> result;
-		for (UInt64 i = 0; i < N; i++) result[i] = _degrees[i] * DegToRad<T>;
+		for (UInt64 i = 0; i < N; i++) result[i] = _radians[i] * DegToRad<T>;
 		return result;
 	}
 
