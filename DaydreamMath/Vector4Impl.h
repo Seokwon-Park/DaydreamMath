@@ -6,7 +6,7 @@
 namespace Daydream
 {
 	template <typename T>
-	inline Vector<4, T> operator*(const Matrix<4, 4, T>& _m, const Vector<4, T>& _v, ) = delete; // Vec * Mat4 => (X)
+	inline Vector<4, T> operator*(const Matrix<4, 4, T>& _m, const Vector<4, T>& _v) = delete; // Vec * Mat4 => (X)
 
 	template <typename T>
 	inline Vector<4, T> Vector<4, T>::Min(const Vector& _a, const Vector& _b)
