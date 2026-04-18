@@ -120,7 +120,7 @@ namespace Daydream
 	}
 
 	template<typename T>
-	inline Vector<3, T> TransformPosition(const Vector<3, T>& _point, const Matrix<4, 4, T>& _mat)
+	inline Vector<3, T> Matrix<4, 4, T>::TransformPosition(const Vector<3, T>& _point, const Matrix<4, 4, T>& _mat)
 	{
 		T x = _point.x * _mat[0][0] + _point.y * _mat[1][0] + _point.z * _mat[2][0] + _mat[3][0];
 		T y = _point.x * _mat[0][1] + _point.y * _mat[1][1] + _point.z * _mat[2][1] + _mat[3][1];
@@ -135,7 +135,7 @@ namespace Daydream
 
 	// [Direction * M] 방향 변환 (w = 0.0 으로 취급하여 이동값이 무시됨)
 	template<typename T>
-	inline Vector<3, T> TransformDirection(const Vector<3, T>& _dir, const Matrix<4, 4, T>& _mat)
+	inline Vector<3, T> Matrix<4, 4, T>::TransformDirection(const Vector<3, T>& _dir, const Matrix<4, 4, T>& _mat)
 	{
 		return Vector<3, T>(
 			_dir.x * _mat[0][0] + _dir.y * _mat[1][0] + _dir.z * _mat[2][0],
@@ -193,18 +193,18 @@ namespace Daydream
 	template <typename T>
 	inline Matrix<4, 4, T> Matrix<4, 4, T>::CreateLookToLH(const Vector<3, T>& _eye, const Vector<3, T>& _direction, const Vector<3, T>& _up)
 	{
-		Vector<3, T> Look = Vector<3, T>::Normalized(_direction);
-		Vector<3, T> Right = Vector<3, T>::Normalized(Vector<3, T>::Cross(_up, Look));
+		Vector<3, T> Look = _direction.Normalized();
+		Vector<3, T> Right = Vector<3, T>::Cross(_up, Look).Normalized();
 		Vector<3, T> Up = Vector<3, T>::Cross(Look, Right);
 
 		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
 
-		// 축 데이터를 세로(Column) 방향으로 배치되도록 수정
-		mat[0][0] = Right.x; mat[1][0] = Up.x; mat[2][0] = Look.x;
-		mat[0][1] = Right.y; mat[1][1] = Up.y; mat[2][1] = Look.y;
-		mat[0][2] = Right.z; mat[1][2] = Up.z; mat[2][2] = Look.z;
+		// Row-Vector(v * M) 기준 완벽한 View 행렬: 축 데이터는 열(Column)로 배치해야 합니다.
+		mat[0][0] = Right.x; mat[0][1] = Up.x; mat[0][2] = Look.x;
+		mat[1][0] = Right.y; mat[1][1] = Up.y; mat[1][2] = Look.y;
+		mat[2][0] = Right.z; mat[2][1] = Up.z; mat[2][2] = Look.z;
 
-		// 이동 데이터도 4번째 행(Row)으로 이동
+		// 이동(Translation) 데이터는 4번째 행(Row)에 배치합니다.
 		mat[3][0] = -Vector<3, T>::Dot(Right, _eye);
 		mat[3][1] = -Vector<3, T>::Dot(Up, _eye);
 		mat[3][2] = -Vector<3, T>::Dot(Look, _eye);

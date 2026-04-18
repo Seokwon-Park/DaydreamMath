@@ -86,7 +86,6 @@ namespace Daydream
 			*this = (*this) * _other;
 			return *this;
 		}
-		Vector4 operator*(const Vector4 _vec) const;
 
 		Matrix Transposed() const
 		{
@@ -117,8 +116,8 @@ namespace Daydream
 		//Vector4 operator*(Vector3 _vector) const;
 		//Vector4 operator*(Vector4 _vector) const;
 
-		Vector<3, T> TransformPoint(const Vector<3, T>& _point) const;
-		Vector<3, T> TransformVector(const Vector<3, T>& _vector) const;
+		static Vector<3, T> TransformPosition(const Vector<3, T>& _point, const Matrix<4, 4, T>& _mat);
+		static Vector<3, T> TransformDirection(const Vector<3, T>& _point, const Matrix<4, 4, T>& _mat);
 
 
 		static Matrix CreateTranslation(const Vector<3, T>& _translation);
