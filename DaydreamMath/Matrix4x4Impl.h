@@ -10,19 +10,24 @@
 namespace Daydream
 {
 	template<typename T>
-	inline Vector4 Matrix<4, 4, T>::operator*(const Vector4 _vec) const
+	inline Vector<4, T> operator*(const Vector<4, T>& _vec, const Matrix<4, 4, T>& _mat)
 	{
-		SIMDRegister row0 = SIMD::LoadUnaligned(mat[0]);
-		SIMDRegister row1 = SIMD::LoadUnaligned(mat[1]);
-		SIMDRegister row2 = SIMD::LoadUnaligned(mat[2]);
-		SIMDRegister row3 = SIMD::LoadUnaligned(mat[3]);
+		// 1. 행렬의 4개 행(Row)을 모두 로드합니다.
+		SIMDRegister row0 = SIMD::LoadUnaligned(_mat[0]);
+		SIMDRegister row1 = SIMD::LoadUnaligned(_mat[1]);
+		SIMDRegister row2 = SIMD::LoadUnaligned(_mat[2]);
+		SIMDRegister row3 = SIMD::LoadUnaligned(_mat[3]);
 
-		return Vector4(
-			SIMD::Dot(row0, _vec.reg),
-			SIMD::Dot(row1, _vec.reg),
-			SIMD::Dot(row2, _vec.reg),
-			SIMD::Dot(row3, _vec.reg)
-		);
+		// 2. 벡터의 각 성분(x, y, z, w)으로 행렬의 행을 스케일링해서 싹 다 더합니다.
+		SIMDRegister res = SIMD::Mul(SIMD::SplatX(_vec.reg), row0);
+		res = SIMD::MultiplyAdd(SIMD::SplatY(_vec.reg), row1, res);
+		res = SIMD::MultiplyAdd(SIMD::SplatZ(_vec.reg), row2, res);
+		res = SIMD::MultiplyAdd(SIMD::SplatW(_vec.reg), row3, res);
+
+		// 3. 결과를 Vector에 담아서 반환
+		Vector<4, T> result;
+		SIMD::StoreUnaligned(result.values, res);
+		return result;
 	}
 
 	template <typename T>
@@ -115,35 +120,37 @@ namespace Daydream
 	}
 
 	template<typename T>
-	inline Vector<3, T> Matrix<4, 4, T>::TransformPoint(const Vector<3, T>& _point) const
+	inline Vector<3, T> TransformPosition(const Vector<3, T>& _point, const Matrix<4, 4, T>& _mat)
 	{
-		const T x = mat[0][0] * _point.x + mat[0][1] * _point.y + mat[0][2] * _point.z + mat[0][3];
-		const T y = mat[1][0] * _point.x + mat[1][1] * _point.y + mat[1][2] * _point.z + mat[1][3];
-		const T z = mat[2][0] * _point.x + mat[2][1] * _point.y + mat[2][2] * _point.z + mat[2][3];
-		const T w = mat[3][0] * _point.x + mat[3][1] * _point.y + mat[3][2] * _point.z + mat[3][3];
+		T x = _point.x * _mat[0][0] + _point.y * _mat[1][0] + _point.z * _mat[2][0] + _mat[3][0];
+		T y = _point.x * _mat[0][1] + _point.y * _mat[1][1] + _point.z * _mat[2][1] + _mat[3][1];
+		T z = _point.x * _mat[0][2] + _point.y * _mat[1][2] + _point.z * _mat[2][2] + _mat[3][2];
+		T w = _point.x * _mat[0][3] + _point.y * _mat[1][3] + _point.z * _mat[2][3] + _mat[3][3];
 
-		if (w == static_cast<T>(0) || w == static_cast<T>(1)) return Vector<3, T>(x, y, z);
+		if (w == static_cast<T>(1) || w == static_cast<T>(0)) return Vector<3, T>(x, y, z);
 
-		const T invW = static_cast<T>(1.0) / w;
+		T invW = static_cast<T>(1) / w;
 		return Vector<3, T>(x * invW, y * invW, z * invW);
 	}
 
+	// [Direction * M] 방향 변환 (w = 0.0 으로 취급하여 이동값이 무시됨)
 	template<typename T>
-	inline Vector<3, T> Matrix<4, 4, T>::TransformVector(const Vector<3, T>& _vector) const
+	inline Vector<3, T> TransformDirection(const Vector<3, T>& _dir, const Matrix<4, 4, T>& _mat)
 	{
 		return Vector<3, T>(
-			mat[0][0] * _vector.x + mat[0][1] * _vector.y + mat[0][2] * _vector.z,
-			mat[1][0] * _vector.x + mat[1][1] * _vector.y + mat[1][2] * _vector.z,
-			mat[2][0] * _vector.x + mat[2][1] * _vector.y + mat[2][2] * _vector.z);
+			_dir.x * _mat[0][0] + _dir.y * _mat[1][0] + _dir.z * _mat[2][0],
+			_dir.x * _mat[0][1] + _dir.y * _mat[1][1] + _dir.z * _mat[2][1],
+			_dir.x * _mat[0][2] + _dir.y * _mat[1][2] + _dir.z * _mat[2][2]
+		);
 	}
 
 	template <typename T>
 	inline Matrix<4, 4, T> Matrix<4, 4, T>::CreateTranslation(const Vector<3, T>& _translation)
 	{
 		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
-		mat[0][3] = _translation.x;
-		mat[1][3] = _translation.y;
-		mat[2][3] = _translation.z;
+		mat[3][0] = _translation.x; // 4번째 행으로 이동
+		mat[3][1] = _translation.y;
+		mat[3][2] = _translation.z;
 		return mat;
 	}
 
@@ -153,31 +160,22 @@ namespace Daydream
 	{
 		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
 
-		// ==============================================================================
-		// 입력으로 들어오는 쿼터니언은 항상 길이가 1 (x^2 + y^2 + z^2 + w^2 = 1)이어야 함
-		// 
-		// 1. 위 공식에서 (w^2 + x^2)만 남기면 -> w^2 + x^2 = 1 - y^2 - z^2
-		// 2. 이 값을 원본 R[0][0] 공식에 대입하면:
-		//    (1 - y^2 - z^2) - y^2 - z^2 
-		//    = 1 - 2y^2 - 2z^2 
-		//    = 1 - 2(y^2 + z^2)
-		//
-		// ==============================================================================
 		T xx = _quat.x * _quat.x;  T xy = _quat.x * _quat.y;  T xz = _quat.x * _quat.z;  T xw = _quat.x * _quat.w;
 		T yy = _quat.y * _quat.y;  T yz = _quat.y * _quat.z;  T yw = _quat.y * _quat.w;
 		T zz = _quat.z * _quat.z;  T zw = _quat.z * _quat.w;
 
 		mat[0][0] = 1 - 2 * (yy + zz);
-		mat[0][1] = 2 * (xy - zw);
-		mat[0][2] = 2 * (xz + yw);
-
-		mat[1][0] = 2 * (xy + zw);
 		mat[1][1] = 1 - 2 * (xx + zz);
-		mat[1][2] = 2 * (yz - xw);
-
-		mat[2][0] = 2 * (xz - yw);
-		mat[2][1] = 2 * (yz + xw);
 		mat[2][2] = 1 - 2 * (xx + yy);
+
+		mat[0][1] = 2 * (xy + zw); // 기존엔 - 였음
+		mat[1][0] = 2 * (xy - zw); // 기존엔 + 였음
+
+		mat[0][2] = 2 * (xz - yw); // 기존엔 + 였음
+		mat[2][0] = 2 * (xz + yw); // 기존엔 - 였음
+
+		mat[1][2] = 2 * (yz + xw); // 기존엔 - 였음
+		mat[2][1] = 2 * (yz - xw); // 기존엔 + 였음
 
 		return mat;
 	}
@@ -195,21 +193,21 @@ namespace Daydream
 	template <typename T>
 	inline Matrix<4, 4, T> Matrix<4, 4, T>::CreateLookToLH(const Vector<3, T>& _eye, const Vector<3, T>& _direction, const Vector<3, T>& _up)
 	{
-		// World Transform = S(cale) * R(otation) * T(ranslation)
-		// View Transform = (R * T)^-1 scale 생략
-		// = T^-1 * R^-1
 		Vector<3, T> Look = Vector<3, T>::Normalized(_direction);
 		Vector<3, T> Right = Vector<3, T>::Normalized(Vector<3, T>::Cross(_up, Look));
 		Vector<3, T> Up = Vector<3, T>::Cross(Look, Right);
 
 		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
-		mat[0][0] = Right.x; mat[0][1] = Right.y; mat[0][2] = Right.z;
-		mat[1][0] = Up.x; mat[1][1] = Up.y; mat[1][2] = Up.z;
-		mat[2][0] = Look.x; mat[2][1] = Look.y; mat[2][2] = Look.z;
 
-		mat[0][3] = -Vector<3, T>::Dot(Right, _eye);
-		mat[1][3] = -Vector<3, T>::Dot(Up, _eye);
-		mat[2][3] = -Vector<3, T>::Dot(Look, _eye);
+		// 축 데이터를 세로(Column) 방향으로 배치되도록 수정
+		mat[0][0] = Right.x; mat[1][0] = Up.x; mat[2][0] = Look.x;
+		mat[0][1] = Right.y; mat[1][1] = Up.y; mat[2][1] = Look.y;
+		mat[0][2] = Right.z; mat[1][2] = Up.z; mat[2][2] = Look.z;
+
+		// 이동 데이터도 4번째 행(Row)으로 이동
+		mat[3][0] = -Vector<3, T>::Dot(Right, _eye);
+		mat[3][1] = -Vector<3, T>::Dot(Up, _eye);
+		mat[3][2] = -Vector<3, T>::Dot(Look, _eye);
 
 		return mat;
 	}
@@ -223,8 +221,11 @@ namespace Daydream
 		mat[0][0] = static_cast<T>(1) / (_aspect * tanHalfFovy);
 		mat[1][1] = static_cast<T>(1) / tanHalfFovy;
 		mat[2][2] = _far / (_far - _near);
-		mat[2][3] = -(_far * _near) / (_far - _near);
-		mat[3][2] = static_cast<T>(1);
+
+		// 이 두 값의 위치를 맞바꿈!
+		mat[2][3] = static_cast<T>(1);
+		mat[3][2] = -(_far * _near) / (_far - _near);
+
 		mat[3][3] = static_cast<T>(0);
 
 		return mat;
@@ -235,19 +236,18 @@ namespace Daydream
 	{
 		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
 
-		// 1. 박스의 폭, 높이, 깊이를 구합니다.
 		T width = _right - _left;
 		T height = _top - _bottom;
 		T depth = _far - _near;
 
-		// 2. 크기를 -1 ~ 1 사이로 정규화(Scale) 합니다.
 		mat[0][0] = static_cast<T>(2.0) / width;
 		mat[1][1] = static_cast<T>(2.0) / height;
 		mat[2][2] = static_cast<T>(2.0) / depth;
 
-		mat[0][3] = -(_right + _left) / width;
-		mat[1][3] = -(_top + _bottom) / height;
-		mat[2][3] = -(_far + _near) / depth;
+		// 이동 데이터 4번째 행(Row)으로 이동
+		mat[3][0] = -(_right + _left) / width;
+		mat[3][1] = -(_top + _bottom) / height;
+		mat[3][2] = -(_far + _near) / depth;
 		mat[3][3] = static_cast<T>(1.0);
 
 		return mat;
