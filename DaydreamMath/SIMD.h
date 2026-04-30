@@ -52,8 +52,8 @@ namespace Daydream
 		{
 			__m128 cmp = _mm_cmpeq_ps(_a, _b);
 
-			// 2. _mm_movemask_ps: 128비트 결과를 4비트 정수(Int)로 압축해 줍니다!
-			// 4개가 모두 같았다면 0b1111 (십진수로 15, 16진수로 0xF)가 나옵니다.
+			// 2. _mm_movemask_ps: 128비트 결과를 4비트 정수(Int)로 압축
+			// 4개가 모두 같았다면 0b1111 (십진수로 15, 16진수로 0xF)
 			return _mm_movemask_ps(cmp) == 0xF;
 		}
 
@@ -137,7 +137,7 @@ namespace Daydream
 		inline SIMDRegister Mul(SIMDRegister _a, SIMDRegister _b) { return vmulq_f32(_a, _b); }
 		inline SIMDRegister SetVal(Float32 _val) { return vdupq_n_f32(_val); }
 
-		// SSE의 _mm_setr_ps와 완벽히 동일한 메모리 순서를 보장하려면 배열 로드가 가장 안전합니다.
+		// SSE의 _mm_setr_ps와 완벽히 동일한 메모리 순서를 보장하려면 배열 로드가 가장 안전
 		inline SIMDRegister SetVal(Float32 _x, Float32 _y, Float32 _z, Float32 _w)
 		{
 			alignas(16) Float32 data[4] = { _x, _y, _z, _w };
@@ -162,7 +162,7 @@ namespace Daydream
 
 		inline Bool Compare(SIMDRegister _a, SIMDRegister _b)
 		{
-			// 1. 비교 연산: SSE와 마찬가지로 같으면 0xFFFFFFFF, 다르면 0x00000000 이 들어갑니다.
+			// 1. 비교 연산: SSE와 마찬가지로 같으면 0xFFFFFFFF, 다르면 0x00000000 
 			uint32x4_t cmp = vceqq_f32(_a, _b);
 
 			// 2. Movemask의 대체제: "모든 것이 0xFFFFFFFF인가?" 를 검사하는 기적의 꼼수
@@ -173,10 +173,10 @@ namespace Daydream
 			// (vminvq_u32는 64비트 전용 명령어라 구형 폰에선 에러가 납니다)
 			// =======================================================
 			/*
-			// 128비트(4개)를 64비트(2개)씩 쪼개서 비트 AND 연산을 때립니다.
+			// 128비트(4개)를 64비트(2개)씩 쪼개서 비트 AND 연산
 			uint32x2_t and_half = vand_u32(vget_low_u32(cmp), vget_high_u32(cmp));
 
-			// 남은 2개를 각각 뽑아서 한번 더 AND 연산!
+			// 남은 2개를 각각 뽑아서 한번 더 AND 연산
 			uint32_t final_mask = vget_lane_u32(and_half, 0) & vget_lane_u32(and_half, 1);
 
 			return final_mask == 0xFFFFFFFF;
@@ -206,12 +206,12 @@ namespace Daydream
 		inline Float32 Dot(SIMDRegister _a, SIMDRegister _b)
 		{
 			SIMDRegister mul = vmulq_f32(_a, _b);
-			// ARMv8(64비트) 최강의 명령어: 레지스터 안의 4개 값을 한방에 더해줍니다.
+			// ARMv8(64비트) 최강의 명령어: 레지스터 안의 4개 값 한번에 더하기
 			return vaddvq_f32(mul);
 		}
 
-		// NEON은 SSE의 _mm_shuffle_ps 같은 깔끔한 매크로가 없습니다. 
-		// 상용 엔진(언리얼 등)은 Clang/GCC의 내장 함수를 사용하는 것을 표준으로 삼습니다.
+		// NEON은 SSE의 _mm_shuffle_ps 같은 깔끔한 매크로 없음
+		// 상용 엔진(언리얼 등)은 Clang/GCC의 내장 함수를 사용하는 것을 표준
 		template<int X, int Y, int Z, int W>
 		inline SIMDRegister Shuffle(SIMDRegister _a, SIMDRegister _b)
 		{

@@ -31,8 +31,8 @@ namespace Daydream
 		Quat<T> q3 = _quatB;
 		T cosTheta = Dot(_quatA, _quatB);
 
-		// 내적값이 음수면 지구 반대편으로 돌아가는 꼴입니다.
-		// 목표 쿼터니언의 부호를 싹 다 뒤집어서(반전) 가까운 길로 유도합니다!
+		// 내적값이 음수면 
+		// 목표 쿼터니언의 부호를 싹 다 뒤집어서(반전) 가까운 길로 유도
 		if (cosTheta < static_cast<T>(0.0))
 		{
 			cosTheta = -cosTheta;
@@ -40,7 +40,7 @@ namespace Daydream
 		}
 
 		// 두 회전값이 거의 똑같을 때(cosTheta가 1에 가까울 때) acos나 sin 연산을 하면 
-		// 0으로 나누기가 터져서(NaN) 게임이 튕깁니다. 이때는 그냥 1차원 선형 보간(Lerp)으로 퉁칩니다!
+		// 0으로 나누기 발생(NaN). 이때는 그냥 1차원 선형 보간(Lerp)
 		if (cosTheta > static_cast<T>(0.9999))
 		{
 			Quat<T> result(
@@ -50,7 +50,7 @@ namespace Daydream
 				_quatA.w + _t * (q3.w - _quatA.w)
 			);
 
-			// Lerp를 거치면 길이가 1이 아니게 되므로 무조건 다시 정규화(Normalize) 해줍니다.
+			// Lerp를 거치면 길이가 1이 아니게 되므로 무조건 다시 정규화(Normalize)
 			T invLen = static_cast<T>(1.0) / std::sqrt(Dot(result, result));
 			result.x *= invLen; result.y *= invLen; result.z *= invLen; result.w *= invLen;
 			return result;
@@ -138,15 +138,15 @@ namespace Daydream
 	template <typename T>
 	inline Quat<T> Quat<T>::CreateFromAxis(const Vector<3, T>& _xAxis, const Vector<3, T>& _yAxis, const Vector<3, T>& _zAxis)
 	{
-		// 1. 빈 단위 행렬(포장지)을 하나 가져옵니다.
+		// 빈 행렬 생성
 		Matrix<4, 4, T> tempMat = Matrix<4, 4, T>::Identity();
 
-		// 2. 포장지의 각 줄(Row)에 3개의 축을 그대로 꽂아 넣습니다!
+		//행렬에 3개의 축 그대로 대입
 		tempMat.mat[0][0] = _xAxis.x; tempMat.mat[0][1] = _xAxis.y; tempMat.mat[0][2] = _xAxis.z;
 		tempMat.mat[1][0] = _yAxis.x; tempMat.mat[1][1] = _yAxis.y; tempMat.mat[1][2] = _yAxis.z;
 		tempMat.mat[2][0] = _zAxis.x; tempMat.mat[2][1] = _zAxis.y; tempMat.mat[2][2] = _zAxis.z;
 
-		// 3. 방금 유로클리디안 스페이스에서 복붙해오신 그 완벽한 함수에 던집니다!
+		// 함수 실행
 		return CreateFromMatrix(tempMat);
 	}
 	template<typename T>
@@ -178,13 +178,13 @@ namespace Daydream
 	{
 		Vector<3, T> euler;
 
-		// 1. X축 회전 (Pitch) 계산 및 짐벌락 방어!
+		// 1. X축 회전 (Pitch) 계산 및 짐벌락 방어
 		T sinp = static_cast<T>(2.0) * (w * x - y * z);
 
-		// sinp 값이 1.0을 넘어가면 (부동소수점 오차) std::asin 이 NaN을 뱉고 게임이 터집니다!
+		// sinp 값이 1.0을 넘어가면 (부동소수점 오차) std::asin이 NaN 발생
 		if (std::abs(sinp) >= static_cast<T>(1.0))
 		{
-			// 90도 (PI / 2) 로 강제 고정하되, 부호는 원래 sinp의 부호를 따라갑니다.
+			// 90도 (PI / 2) 로 강제 고정하되, 부호는 원래 sinp의 부호
 			euler.x = std::copysign(static_cast<T>(3.14159265358979323846 / 2.0), sinp);
 		}
 		else

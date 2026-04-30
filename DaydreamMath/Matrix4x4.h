@@ -59,7 +59,7 @@ namespace Daydream
 			SIMDRegister b2 = SIMD::LoadUnaligned(_other.mat[2]);
 			SIMDRegister b3 = SIMD::LoadUnaligned(_other.mat[3]);
 
-			// 2. 앞에 있는 행렬(*this, 즉 A)의 행을 하나씩 꺼내서 계산합니다.
+			// 2. 앞에 있는 행렬(*this, 즉 A)의 행을 하나씩 꺼내서 계산
 			for (UInt64 i = 0; i < 4; ++i)
 			{
 				SIMDRegister rowA = SIMD::LoadUnaligned(mat[i]);

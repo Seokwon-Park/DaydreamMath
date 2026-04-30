@@ -12,13 +12,13 @@ namespace Daydream
 	template<typename T>
 	inline Vector<4, T> operator*(const Vector<4, T>& _vec, const Matrix<4, 4, T>& _mat)
 	{
-		// 1. 행렬의 4개 행(Row)을 모두 로드합니다.
+		// 1. 행렬의 4개 행(Row)을 모두 로드
 		SIMDRegister row0 = SIMD::LoadUnaligned(_mat[0]);
 		SIMDRegister row1 = SIMD::LoadUnaligned(_mat[1]);
 		SIMDRegister row2 = SIMD::LoadUnaligned(_mat[2]);
 		SIMDRegister row3 = SIMD::LoadUnaligned(_mat[3]);
 
-		// 2. 벡터의 각 성분(x, y, z, w)으로 행렬의 행을 스케일링해서 싹 다 더합니다.
+		// 2. 벡터의 각 성분(x, y, z, w)으로 행렬의 행을 스케일링해서 다 더하기
 		SIMDRegister res = SIMD::Mul(SIMD::SplatX(_vec.reg), row0);
 		res = SIMD::MultiplyAdd(SIMD::SplatY(_vec.reg), row1, res);
 		res = SIMD::MultiplyAdd(SIMD::SplatZ(_vec.reg), row2, res);
@@ -96,18 +96,18 @@ namespace Daydream
 			vec1.z * fac4.z - vec0.z * fac2.z - vec2.z * fac5.z,
 			vec0.w * fac2.w - vec1.w * fac4.w + vec2.w * fac5.w);
 
-		// 4. 전체 행렬식(Determinant)을 구합니다.
+		// 전체 행렬식(Determinant) 계산
 		Vector<4, T> row0(inv0.x, inv1.x, inv2.x, inv3.x);
 		Vector<4, T> dot0(m00 * row0.x, m01 * row0.y, m02 * row0.z, m03 * row0.w);
 		T det = dot0.x + dot0.y + dot0.z + dot0.w;
 
-		// 5. 역행렬이 존재하지 않는 경우(det == 0) 방어 로직
+		// 역행렬이 존재하지 않는 경우(det == 0) 방어 로직
 		if (std::abs(det) <= static_cast<T>(1e-6))
 		{
 			return Matrix<4, 4, T>::Identity(); //실패시 단위행렬 리턴
 		}
 
-		// 6. 각 원소를 행렬식으로 나누어 최종 역행렬을 완성합니다.
+		//  각 원소를 행렬식으로 나누어 최종 역행렬을 완성
 		T invDet = static_cast<T>(1.0) / det;
 		Matrix<4, 4, T> result;
 
@@ -199,12 +199,12 @@ namespace Daydream
 
 		Matrix<4, 4, T> mat = Matrix<4, 4, T>::Identity();
 
-		// Row-Vector(v * M) 기준 완벽한 View 행렬: 축 데이터는 열(Column)로 배치해야 합니다.
+		// Row-Vector(v * M) 기준 
 		mat[0][0] = Right.x; mat[0][1] = Up.x; mat[0][2] = Look.x;
 		mat[1][0] = Right.y; mat[1][1] = Up.y; mat[1][2] = Look.y;
 		mat[2][0] = Right.z; mat[2][1] = Up.z; mat[2][2] = Look.z;
 
-		// 이동(Translation) 데이터는 4번째 행(Row)에 배치합니다.
+		// 이동(Translation) 데이터
 		mat[3][0] = -Vector<3, T>::Dot(Right, _eye);
 		mat[3][1] = -Vector<3, T>::Dot(Up, _eye);
 		mat[3][2] = -Vector<3, T>::Dot(Look, _eye);
@@ -215,7 +215,7 @@ namespace Daydream
 	template <typename T>
 	inline Matrix<4, 4, T> Matrix<4, 4, T>::CreatePerspectiveLH(T _fovy, T _aspect, T _near, T _far)
 	{
-		Matrix<4, 4, T> mat; // Zero 초기화라고 가정
+		Matrix<4, 4, T> mat; 
 		T tanHalfFovy = std::tan(_fovy * static_cast<T>(0.5));
 
 		mat[0][0] = static_cast<T>(1) / (_aspect * tanHalfFovy);
@@ -256,11 +256,11 @@ namespace Daydream
 	template <typename T>
 	inline Matrix<4, 4, T> Matrix<4, 4, T>::CreateOrthographicLH(T _width, T _height, T _near, T _far)
 	{
-		// 중심(0,0)을 기준으로 좌우/상하를 절반씩 찢어서 코어 함수에 토스!
+		// 중심(0,0)을 기준으로 좌우/상하를 절반씩 찢어서 코어 함수에
 		T halfW = _width / static_cast<T>(2.0);
 		T halfH = _height / static_cast<T>(2.0);
 
-		// (주의: LH-왼손좌표계 라면 Z축 방향 최적화가 RH와 약간 다를 수 있으나, 개념적으론 동일합니다)
+		// 주의: LH-왼손좌표계 라면 Z축 방향 최적화가 RH와 약간 다를 수 있으나, 개념적으론 동일
 		return CreateOrthographicLH(-halfW, halfW, -halfH, halfH, _near, _far);
 	}
 
