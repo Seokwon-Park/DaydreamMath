@@ -165,12 +165,12 @@ namespace Daydream
 			// 1. 비교 연산: SSE와 마찬가지로 같으면 0xFFFFFFFF, 다르면 0x00000000 
 			uint32x4_t cmp = vceqq_f32(_a, _b);
 
-			// 2. Movemask의 대체제: "모든 것이 0xFFFFFFFF인가?" 를 검사하는 기적의 꼼수
+			// 2. Movemask의 대체제: "모든 것이 0xFFFFFFFF인가?" 를 검사
 			return vminvq_u32(cmp) == 0xFFFFFFFF;
 
 
 			// =======================================================
-			// (vminvq_u32는 64비트 전용 명령어라 구형 폰에선 에러가 납니다)
+			// (vminvq_u32는 64비트 전용 명령어
 			// =======================================================
 			/*
 			// 128비트(4개)를 64비트(2개)씩 쪼개서 비트 AND 연산
@@ -189,7 +189,6 @@ namespace Daydream
 			float32x4_t diff = vsubq_f32(_a, _b);
 
 			// Step 2: 절대값 구하기
-			// NEON은 전용 명령어(vabsq)가 있어서 흑마법을 쓸 필요가 없습니다!
 			float32x4_t absDiff = vabsq_f32(diff);
 
 			// Step 3: 엡실론 레지스터 준비 (4칸 복사)
@@ -198,7 +197,7 @@ namespace Daydream
 			// Step 4: 작거나 같은가? (Compare Less-than or Equal)
 			uint32x4_t cmp = vcleq_f32(absDiff, epsReg);
 
-			// Step 5: 이전 답변에서 배웠던 기적의 꼼수 (가장 작은 값이 0xFFFFFFFF인가?)
+			// 가장 작은 값이 0xFFFFFFFF인가?
 			return vminvq_u32(cmp) == 0xFFFFFFFF;
 		}
 
