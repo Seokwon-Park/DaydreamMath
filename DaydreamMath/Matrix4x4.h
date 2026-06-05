@@ -54,7 +54,7 @@ namespace Daydream
 				{
 					float targetValue = (i == j) ? 1.0f : 0.0f;
 
-					if (std::abs(m[i][j] - targetValue) > Math::Epsilon)
+					if (std::abs(mat[i][j] - targetValue) > Math::Epsilon)
 					{
 						return false;
 					}
