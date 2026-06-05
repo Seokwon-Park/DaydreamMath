@@ -130,13 +130,6 @@ namespace Daydream
 			*this = Inversed();
 		}
 
-		Matrix4x4 Cleaned() const;
-		void Clean()
-		{
-			*this = Cleaned();
-		}
-
-
 		//Matrix4x4 operator*(const Matrix4x4& _matrix) const;
 		//Vector4 operator*(Vector3 _vector) const;
 		//Vector4 operator*(Vector4 _vector) const;

@@ -39,7 +39,7 @@ namespace Daydream
 		constexpr T GenericTwoPI = GenericPI<T> *static_cast<T>(2.0);
 
 		template <std::floating_point T>
-		constexpr T GenericEpsilon = std::numeric_limits<T>::min();
+		constexpr T GenericEpsilon = std::numeric_limits<T>::epsilon();
 
 		template <std::floating_point T>
 		constexpr T GenericDegToRad = GenericPI<T> / static_cast<T>(180.0);

@@ -106,7 +106,7 @@ namespace Daydream
 		{
 			return Matrix<4, 4, T>::Identity(); //실패시 단위행렬 리턴
 		}
-
+		
 		//  각 원소를 행렬식으로 나누어 최종 역행렬을 완성
 		T invDet = static_cast<T>(1.0) / det;
 		Matrix<4, 4, T> result;
@@ -115,24 +115,6 @@ namespace Daydream
 		result.mat[1][0] = inv1.x * invDet; result.mat[1][1] = inv1.y * invDet; result.mat[1][2] = inv1.z * invDet; result.mat[1][3] = inv1.w * invDet;
 		result.mat[2][0] = inv2.x * invDet; result.mat[2][1] = inv2.y * invDet; result.mat[2][2] = inv2.z * invDet; result.mat[2][3] = inv2.w * invDet;
 		result.mat[3][0] = inv3.x * invDet; result.mat[3][1] = inv3.y * invDet; result.mat[3][2] = inv3.z * invDet; result.mat[3][3] = inv3.w * invDet;
-
-		return result;
-	}
-
-	template<typename T>
-	inline Matrix4x4 Matrix<4, 4, T>::Cleaned() const
-	{
-		Matrix<4, 4, T> result;
-		for (int i = 0; i < 4; ++i)
-		{
-			for (int j = 0; j < 4; ++j)
-			{
-				if (std::abs(result[i][j]) < Math::Epsilon)
-				{
-					result[i][j] = 0.0f;
-				}
-			}
-		}
 
 		return result;
 	}
