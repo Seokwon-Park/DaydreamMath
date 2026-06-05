@@ -46,6 +46,25 @@ namespace Daydream
 			return Matrix();
 		}
 
+		bool IsIdentity() const
+		{
+			for (int i = 0; i < 4; ++i)
+			{
+				for (int j = 0; j < 4; ++j)
+				{
+					float targetValue = (i == j) ? 1.0f : 0.0f;
+
+					if (std::abs(m[i][j] - targetValue) > Math::Epsilon)
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+
 		T* operator[](UInt64 _row) { return mat[_row]; }
 		const T* operator[](UInt64 _row) const { return mat[_row]; }
 
@@ -109,6 +128,12 @@ namespace Daydream
 		void Inverse()
 		{
 			*this = Inversed();
+		}
+
+		Matrix4x4 Cleaned() const;
+		void Clean()
+		{
+			*this = Cleaned();
 		}
 
 

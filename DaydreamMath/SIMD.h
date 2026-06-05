@@ -147,7 +147,7 @@ namespace Daydream
 		// 2. 나눗셈 및 근사
 		inline SIMDRegister Div(SIMDRegister _a, SIMDRegister _b) { return vdivq_f32(_a, _b); }
 
-		// NEON은 역제곱근 계산 시, 추정치(Estimate)를 구하고 뉴턴-랩슨(Newton-Raphson) 
+		// NEON은 역제곱근 계산 시, 추정치를 구하고 뉴턴-랩슨
 		// 1단계를 거쳐야 SSE와 비슷한 수준의 정밀도
 		inline SIMDRegister Rsqrt(SIMDRegister _val)
 		{

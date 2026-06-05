@@ -120,6 +120,24 @@ namespace Daydream
 	}
 
 	template<typename T>
+	inline Matrix4x4 Matrix<4, 4, T>::Cleaned() const
+	{
+		Matrix<4, 4, T> result;
+		for (int i = 0; i < 4; ++i)
+		{
+			for (int j = 0; j < 4; ++j)
+			{
+				if (std::abs(result[i][j]) < Math::Epsilon)
+				{
+					result[i][j] = 0.0f;
+				}
+			}
+		}
+
+		return result;
+	}
+
+	template<typename T>
 	inline Vector<3, T> Matrix<4, 4, T>::TransformPosition(const Vector<3, T>& _point, const Matrix<4, 4, T>& _mat)
 	{
 		T x = _point.x * _mat[0][0] + _point.y * _mat[1][0] + _point.z * _mat[2][0] + _mat[3][0];
